@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfiCinematekTool.Domain", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfiCinematekTool.Application", "DfiCinematekTool.Application\DfiCinematekTool.Application.csproj", "{A0EF66E9-2E96-436F-A271-7E9D40EBB8F4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DfiCinematekTool.Infrastructure", "DfiCinematekTool.Infrastructure\DfiCinematekTool.Infrastructure.csproj", "{FC9F3B50-D99B-41D7-93EB-A8628713C246}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A0EF66E9-2E96-436F-A271-7E9D40EBB8F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0EF66E9-2E96-436F-A271-7E9D40EBB8F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0EF66E9-2E96-436F-A271-7E9D40EBB8F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC9F3B50-D99B-41D7-93EB-A8628713C246}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC9F3B50-D99B-41D7-93EB-A8628713C246}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC9F3B50-D99B-41D7-93EB-A8628713C246}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC9F3B50-D99B-41D7-93EB-A8628713C246}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
