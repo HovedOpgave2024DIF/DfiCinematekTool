@@ -12,4 +12,8 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DfiCinematekTool.Application\DfiCinematekTool.Application.csproj" />
+  </ItemGroup>
+
 </Project>
