@@ -1,10 +1,16 @@
 using DfiCinematekTool.Components;
+using DfiCinematekTool.Application;
+using DfiCinematekTool.Application.Interfaces;
+using DfiCinematekTool.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Application dependencies
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
