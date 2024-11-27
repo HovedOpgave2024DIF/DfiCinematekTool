@@ -4,10 +4,19 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>cfcb6044-dc6f-4edc-b755-a2e3e348c4e9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\DfiCinematekTool.Application\DfiCinematekTool.Application.csproj" />
+    <ProjectReference Include="..\DfiCinematekTool.Infrastructure\DfiCinematekTool.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
