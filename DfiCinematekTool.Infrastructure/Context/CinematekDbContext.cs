@@ -2,11 +2,6 @@
 using DfiCinematekTool.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DfiCinematekTool.Infrastructure.Context
 {
@@ -17,6 +12,8 @@ namespace DfiCinematekTool.Infrastructure.Context
 
 		}
 
-		DbSet<Film> Films { get; set; }
+		public DbSet<Film> Films { get; set; } = default!;
+		public DbSet<Event> Events { get; set; } = default!;
+		public DbSet<FilmStatus> FilmStatuses { get; set; } = default!;
 	}
 }
