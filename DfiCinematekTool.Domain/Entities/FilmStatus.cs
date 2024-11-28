@@ -1,38 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DfiCinematekTool.Domain.Entities
 {
-	[Table(name: "FilmStatus")]
+	[Table("FilmStatus")]
 	public class FilmStatus
 	{
-		[Column(name: "Id")]
+		[Column("Id")]
 		public int Id { get; set; }
 
-		[Column(name: "EventId")]
+		[Column("EventId")]
+		[ForeignKey(nameof(Event))]
 		public int? EventId { get; set; }
 
-		[Column(name: "FilmId")]
+		[Column("FilmId")]
+		[ForeignKey(nameof(Film))]
 		public int? FilmId { get; set; }
 
-		[Column(name: "ReceivedDate")]
-		public DateTime DateTime { get; set; }
+		public Event? Event { get; set; }
 
-		[Column(name: "CheckedDate")]
+		public Film? Film { get; set; }
+
+		[Column("ReceivedDate")]
+		public DateTime ReceivedDate { get; set; }
+
+		[Column("CheckedDate")]
 		public DateTime CheckedDate { get; set; }
 
-		[Column(name: "PreparedDate")]
+		[Column("PreparedDate")]
 		public DateTime PreparedDate { get; set; }
 
-		[Column(name:"Comment")]
+		[Column("Comment")]
 		public string Comment { get; set; } = string.Empty;
 
-		[Column(name: "HasKey")]
+		[Column("HasKey")]
 		public bool HasKey { get; set; }
 	}
 }
