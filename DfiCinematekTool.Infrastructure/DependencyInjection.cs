@@ -1,5 +1,7 @@
-﻿using DfiCinematekTool.Infrastructure.Context;
+﻿using DfiCinematekTool.Domain.Interfaces;
+using DfiCinematekTool.Infrastructure.Context;
 using DfiCinematekTool.Infrastructure.Identity;
+using DfiCinematekTool.Infrastructure.Repositories;
 using DfiCinematekTool.Infrastructure.Seeds;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +12,8 @@ namespace DfiCinematekTool.Infrastructure
 	{
 		public static IServiceCollection AddInfrastructure(this IServiceCollection services)
 		{
+			services.AddScoped<IEventRepository, EventRepository>();
+			services.AddScoped<IFilmRepository, FilmRepository>();
 			return services;
 		}
 
