@@ -1,12 +1,11 @@
 using DfiCinematekTool.Components;
 using DfiCinematekTool.Application;
-using DfiCinematekTool.Application.Interfaces;
-using DfiCinematekTool.Application.Services;
 using DfiCinematekTool.Infrastructure;
 using DfiCinematekTool.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
 using DfiCinematekTool.Infrastructure.Context;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +35,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 builder.Services.AddApplication();
 
 var app = builder.Build();
+
+// Seed Data
+await app.Services.UseSeedUserAndRoleDataAsync();
+await app.Services.UseSeedFilmsAndEventDataAsync();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
