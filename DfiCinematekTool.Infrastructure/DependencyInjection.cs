@@ -14,6 +14,7 @@ namespace DfiCinematekTool.Infrastructure
 		{
 			services.AddScoped<IEventRepository, EventRepository>();
 			services.AddScoped<IFilmRepository, FilmRepository>();
+			services.AddScoped<IFilmStatusRepository, FilmStatusRepository>();
 			return services;
 		}
 

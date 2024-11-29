@@ -1,20 +1,19 @@
-﻿
-using DfiCinematekTool.Domain.Entities;
+﻿using DfiCinematekTool.Domain.Entities;
 
 namespace DfiCinematekTool.Domain.Interfaces
 {
     public interface IEventRepository
     {
+	    Task<Event> CreateEventAsync(Event newEvent);
 
-        Task<Event> CreateEventAsync(Event newEvent);
-        Task<List<Event>> GetAllEventsAsync();
+	    Task<List<Event>> GetAllEventsAsync();
 
-        Task<Event?> GetEventByIdAsync(int id);
+	    Task<Event?> GetEventById(int id);
 
-        Task<Event?> DeleteEventAsync(int id);
+	    Task<Event?> UpdateEvent(Event updateEvent);
 
-        Task<Event?> UpdateEventAsync(int id, Event updatedEvent);
+	    Task<bool> DeleteEventById(int id);
 
-
-    }
+	    Task<List<Event>> GetPaginatedEventsAsync(int pageNumber, int pageSize);
+	}
 }
