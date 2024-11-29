@@ -18,5 +18,18 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 		{
 			return await _dbContext.Films.ToListAsync();
 		}
+
+		public async Task<List<Film>> GetPaginatedFilmsAsync(int pageNumber, int pageSize)
+		{
+			if (pageNumber < 1)
+				throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number must be greater than or equal to 1.");
+
+			if (pageSize < 1)
+				throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than or equal to 1.");
+
+			var skipNumber = (pageNumber - 1) * pageSize;
+
+			return await _dbContext.Films.Skip(skipNumber).Take(pageSize).ToListAsync();
+		}
 	}
 }
