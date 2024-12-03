@@ -157,7 +157,18 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 				throw new ArgumentOutOfRangeException(nameof(id), "ID must be greater than 0.");
 
 			var eventToDelete = await _dbContext.Events.FirstOrDefaultAsync(ev => ev.Id == id);
+			
 			if (eventToDelete is null) return false;
+
+			var eventFilms = eventToDelete.Films.ToList();
+
+			if (eventFilms.Count > 0)
+			{
+				foreach (var film in eventFilms)
+				{
+					await _filmStatusRepository.DeleteFilmStatusAsync(eventToDelete.Id, film.Id);
+				}
+			}
 
 			_dbContext.Events.Remove(eventToDelete);
 			await _dbContext.SaveChangesAsync();

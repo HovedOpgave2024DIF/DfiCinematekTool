@@ -30,22 +30,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			await _dbContext.DisposeAsync();
 		}
 
-		//private static async Task SeedDatabase(CinematekDbContext dbContext)
-		//{
-		//	var films = new List<Film>
-		//	{
-		//		new Film { Title = "Den lille fugl og larven", Format = "DCP", DurationInMinutes = 4, SortOrder = 1 },
-		//		new Film { Title = "Forårsfest", Format = "DCP", DurationInMinutes = 5, SortOrder = 2 },
-		//		new Film { Title = "Astons gaver", OriginalTitle = "Astons presenter", Format = "DCP", DurationInMinutes = 9, SortOrder = 3 },
-		//		new Film { Title = "En lille smule", OriginalTitle = "Bara Lite", Format = "DCP", DurationInMinutes = 9, SortOrder = 4 },
-		//		new Film { Title = "Min oldefars historier - Ridderne", Format = "DCP", DurationInMinutes = 9, SortOrder = 5 },
-		//		new Film { Title = "Pipfugle", Format = "DCP", DurationInMinutes = 9, SortOrder = 6 },
-		//	};
-
-		//	await dbContext.Films.AddRangeAsync(films);
-		//	await dbContext.SaveChangesAsync();
-		//}
-
 		[Fact]
 		public async Task GetAllFilmsAsync_ReturnsAllFilms()
 		{

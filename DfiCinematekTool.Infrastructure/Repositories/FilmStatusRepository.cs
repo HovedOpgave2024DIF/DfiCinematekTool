@@ -73,7 +73,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 				throw new ArgumentOutOfRangeException(nameof(eventId), "Event id cannot be 0.");
 
 			if (filmId < 1)
-				throw new ArgumentOutOfRangeException(nameof(eventId), "Film id cannot be 0.");
+				throw new ArgumentOutOfRangeException(nameof(filmId), "Film id cannot be 0.");
 
 			var filmStatus = await GetFilmStatusByIds(eventId, filmId);
 
