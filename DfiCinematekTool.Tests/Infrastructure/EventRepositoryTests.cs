@@ -51,7 +51,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 		public async Task GetEventByIdAsync_ReturnsOneEvent(int eventId)
 		{
 			// Act
-			var ev = await _eventRepository.GetEventById(eventId);
+			var ev = await _eventRepository.GetEventByIdAsync(eventId);
 
 			// Assert
 			Assert.NotNull(ev);
@@ -64,7 +64,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 		public async Task GetEventById_ThrowsException_WhenIdIsInvalid(int eventId)
 		{
 			var exception = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
-				async () => await _eventRepository.GetEventById(eventId)
+				async () => await _eventRepository.GetEventByIdAsync(eventId)
 			);
 
 			Assert.Equal("ID must be greater than 0. (Parameter 'id')", exception.Message);
@@ -142,7 +142,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal(2, createdEvent?.Films?.Count);
 
 			// Verify the event was saved in the database
-			var savedEvent = await _eventRepository.GetEventById(createdEvent.Id);
+			var savedEvent = await _eventRepository.GetEventByIdAsync(createdEvent.Id);
 			Assert.NotNull(savedEvent);
 			Assert.Equal("New Event", savedEvent.Title);
 			Assert.Equal(2, savedEvent?.Films?.Count);
@@ -186,13 +186,13 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			const int eventId = 1;
 
 			// Act
-			var hasBeenDeleted = await _eventRepository.DeleteEventById(eventId);
+			var hasBeenDeleted = await _eventRepository.DeleteEventByIdAsync(eventId);
 
 			// Assert
 			Assert.True(hasBeenDeleted);
 
 			// Verify the event has been deleted
-			var eventDeleted = await _eventRepository.GetEventById(eventId);
+			var eventDeleted = await _eventRepository.GetEventByIdAsync(eventId);
 			Assert.Null(eventDeleted);
 		}
 
@@ -203,7 +203,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			const int eventId = 3;
 
 			// Act
-			var hasNotBeenDeleted = await _eventRepository.DeleteEventById(eventId);
+			var hasNotBeenDeleted = await _eventRepository.DeleteEventByIdAsync(eventId);
 
 			// Assert
 			Assert.False(hasNotBeenDeleted);
@@ -217,7 +217,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 
 			// Act & Assert
 			var exception = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
-				async () => await _eventRepository.DeleteEventById(eventId)
+				async () => await _eventRepository.DeleteEventByIdAsync(eventId)
 			);
 
 			Assert.Equal("ID must be greater than 0. (Parameter 'id')", exception.Message);
@@ -249,7 +249,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			};
 
 			// Act
-			var updatedResult = await _eventRepository.UpdateEvent(updatedEvent);
+			var updatedResult = await _eventRepository.UpdateEventAsync(updatedEvent);
 
 			// Assert
 			Assert.NotNull(updatedResult);
@@ -258,7 +258,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal(2, updatedResult.Films.Count);
 
 			// Verify the changes are reflected in the database
-			var dbEvent = await _eventRepository.GetEventById(1);
+			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
 			Assert.Equal("Updated Event Title", dbEvent.Title);
 			Assert.Equal(2, dbEvent.Films.Count);
@@ -282,14 +282,14 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			};
 
 			// Act
-			var updatedResult = await _eventRepository.UpdateEvent(updatedEvent);
+			var updatedResult = await _eventRepository.UpdateEventAsync(updatedEvent);
 
 			// Assert
 			Assert.NotNull(updatedResult);
 			Assert.Contains(updatedResult.Films, f => f.Id == 3);
 
 			// Verify the changes in the database
-			var dbEvent = await _eventRepository.GetEventById(1);
+			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
 			Assert.Contains(dbEvent.Films, f => f.Id == 3);
 		}
@@ -310,7 +310,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			};
 
 			// Act
-			var updatedResult = await _eventRepository.UpdateEvent(updatedEvent);
+			var updatedResult = await _eventRepository.UpdateEventAsync(updatedEvent);
 
 			// Assert
 			Assert.NotNull(updatedResult);
@@ -318,7 +318,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Contains(updatedResult.Films, f => f.Id == 2);
 
 			// Verify the changes in the database
-			var dbEvent = await _eventRepository.GetEventById(1);
+			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
 			Assert.Single(dbEvent.Films);
 			Assert.Contains(dbEvent.Films, f => f.Id == 2);
@@ -330,7 +330,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			// Act & Assert
 			var exception = await Assert.ThrowsAsync<ArgumentNullException>(async () =>
 			{
-				await _eventRepository.UpdateEvent(null);
+				await _eventRepository.UpdateEventAsync(null);
 			});
 
 			Assert.Equal("Updated event cannot be null. (Parameter 'updatedEvent')", exception.Message);
@@ -347,7 +347,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			};
 
 			// Act
-			var result = await _eventRepository.UpdateEvent(updatedEvent);
+			var result = await _eventRepository.UpdateEventAsync(updatedEvent);
 
 			// Assert
 			Assert.Null(result);

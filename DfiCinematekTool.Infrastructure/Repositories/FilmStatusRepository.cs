@@ -32,7 +32,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			return newFilmStatus;
 		}
 
-		public async Task<FilmStatus?> GetFilmStatusByIds(int eventId, int filmId)
+		public async Task<FilmStatus?> GetFilmStatusByIdsAsync(int eventId, int filmId)
 		{
 			if (eventId < 1)
 				throw new ArgumentOutOfRangeException(nameof(eventId), "Event id cannot be 0.");
@@ -75,7 +75,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			if (filmId < 1)
 				throw new ArgumentOutOfRangeException(nameof(filmId), "Film id cannot be 0.");
 
-			var filmStatus = await GetFilmStatusByIds(eventId, filmId);
+			var filmStatus = await GetFilmStatusByIdsAsync(eventId, filmId);
 
 			if (filmStatus is null)
 				return false;

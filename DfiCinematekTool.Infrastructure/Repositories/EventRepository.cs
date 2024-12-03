@@ -76,7 +76,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 				.ToListAsync();
 		}
 
-		public async Task<Event?> GetEventById(int id)
+		public async Task<Event?> GetEventByIdAsync(int id)
 		{
 			if (id < 1)
 				throw new ArgumentOutOfRangeException(nameof(id), "ID must be greater than 0.");
@@ -86,7 +86,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 				.FirstOrDefaultAsync(ev => ev.Id == id);
 		}
 
-		public async Task<Event?> UpdateEvent(Event updatedEvent)
+		public async Task<Event?> UpdateEventAsync(Event updatedEvent)
 		{
 			if (updatedEvent is null)
 				throw new ArgumentNullException(nameof(updatedEvent), "Updated event cannot be null.");
@@ -138,7 +138,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 				{
 					eventToUpdate?.Films?.Remove(filmToRemove);
 
-					var filmStatus = await _filmStatusRepository.GetFilmStatusByIds(updatedEvent.Id, filmId);
+					var filmStatus = await _filmStatusRepository.GetFilmStatusByIdsAsync(updatedEvent.Id, filmId);
 					if (filmStatus != null)
 					{
 						await _filmStatusRepository.DeleteFilmStatusAsync(updatedEvent.Id, filmId);
@@ -151,7 +151,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			return eventToUpdate;
 		}
 
-		public async Task<bool> DeleteEventById(int id)
+		public async Task<bool> DeleteEventByIdAsync(int id)
 		{
 			if (id <= 0)
 				throw new ArgumentOutOfRangeException(nameof(id), "ID must be greater than 0.");
