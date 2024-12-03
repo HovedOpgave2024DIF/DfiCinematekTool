@@ -109,9 +109,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal("Page size must be greater than or equal to 1. (Parameter 'pageSize')", exception.Message);
 		}
 
-		// Create
-
-		// Update
 		[Fact]
 		public async Task CreateEventAsync_AddsNewEventWithFilms()
 		{
@@ -226,6 +223,135 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal("ID must be greater than 0. (Parameter 'id')", exception.Message);
 		}
 
-		// Test UpdateEvents
+		[Fact]
+		public async Task UpdateEvent_UpdatesEventDetailsSuccessfully()
+		{
+			// Arrange
+			var updatedEvent = new Event
+			{
+				Id = 1,
+				Title = "Updated Event Title",
+				DateId = 456,
+				Screen = "Updated Screen",
+				DurationInMinutes = 150,
+				Owner = "Updated Owner",
+				OwnerEmail = "updatedowner@example.com",
+				EventType = "Updated Event Type",
+				IsEvent = false,
+				IsRooftop = true,
+				Published = true,
+				Abbriviation = "UPD",
+				Films = new List<Film>
+				{
+					new Film { Id = 2 },
+					new Film { Id = 3 }
+				}
+			};
+
+			// Act
+			var updatedResult = await _eventRepository.UpdateEvent(updatedEvent);
+
+			// Assert
+			Assert.NotNull(updatedResult);
+			Assert.Equal("Updated Event Title", updatedResult.Title);
+			Assert.Equal(150, updatedResult.DurationInMinutes);
+			Assert.Equal(2, updatedResult.Films.Count);
+
+			// Verify the changes are reflected in the database
+			var dbEvent = await _eventRepository.GetEventById(1);
+			Assert.NotNull(dbEvent);
+			Assert.Equal("Updated Event Title", dbEvent.Title);
+			Assert.Equal(2, dbEvent.Films.Count);
+		}
+
+		[Fact]
+		public async Task UpdateEvent_AddsNewFilmsToEvent()
+		{
+			// Arrange
+			var updatedEvent = new Event
+			{
+				Id = 1,
+				Title = "Event with Added Films",
+				DateId = 123,
+				Films = new List<Film>
+				{
+					new Film { Id = 1 },
+					new Film { Id = 2 },
+					new Film { Id = 3 } // Adding a new film
+		        }
+			};
+
+			// Act
+			var updatedResult = await _eventRepository.UpdateEvent(updatedEvent);
+
+			// Assert
+			Assert.NotNull(updatedResult);
+			Assert.Contains(updatedResult.Films, f => f.Id == 3);
+
+			// Verify the changes in the database
+			var dbEvent = await _eventRepository.GetEventById(1);
+			Assert.NotNull(dbEvent);
+			Assert.Contains(dbEvent.Films, f => f.Id == 3);
+		}
+
+		[Fact]
+		public async Task UpdateEvent_RemovesFilmsFromEvent()
+		{
+			// Arrange
+			var updatedEvent = new Event
+			{
+				Id = 1,
+				Title = "Event with Removed Films",
+				DateId = 123,
+				Films = new List<Film>
+				{
+					new Film { Id = 2 } // Removing other films
+		        }
+			};
+
+			// Act
+			var updatedResult = await _eventRepository.UpdateEvent(updatedEvent);
+
+			// Assert
+			Assert.NotNull(updatedResult);
+			Assert.Single(updatedResult.Films);
+			Assert.Contains(updatedResult.Films, f => f.Id == 2);
+
+			// Verify the changes in the database
+			var dbEvent = await _eventRepository.GetEventById(1);
+			Assert.NotNull(dbEvent);
+			Assert.Single(dbEvent.Films);
+			Assert.Contains(dbEvent.Films, f => f.Id == 2);
+		}
+
+		[Fact]
+		public async Task UpdateEvent_ThrowsException_WhenEventIsNull()
+		{
+			// Act & Assert
+			var exception = await Assert.ThrowsAsync<ArgumentNullException>(async () =>
+			{
+				await _eventRepository.UpdateEvent(null);
+			});
+
+			Assert.Equal("Updated event cannot be null. (Parameter 'updatedEvent')", exception.Message);
+		}
+
+		[Fact]
+		public async Task UpdateEvent_ReturnsNull_WhenEventDoesNotExist()
+		{
+			// Arrange
+			var updatedEvent = new Event
+			{
+				Id = 99, // Non-existent event
+				Title = "Non-existent Event"
+			};
+
+			// Act
+			var result = await _eventRepository.UpdateEvent(updatedEvent);
+
+			// Assert
+			Assert.Null(result);
+		}
+
 	}
 }

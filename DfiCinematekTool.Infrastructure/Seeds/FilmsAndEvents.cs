@@ -10,6 +10,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 		{
 			await SeedFilms(dbContext);
 			await SeedEvents(dbContext);
+			await SeedFilmStatus(dbContext);
 		}
 
 		private static async Task SeedFilms(CinematekDbContext dbContext)
@@ -104,6 +105,83 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 
 						await dbContext.Events.AddAsync(ev);
 					}
+				}
+			}
+
+			await dbContext.SaveChangesAsync();
+		}
+
+		private static async Task SeedFilmStatus(CinematekDbContext dbContext)
+		{
+			List<FilmStatus> filmStatuses = new()
+			{
+				new FilmStatus()
+				{
+					EventId = 2,
+					FilmId = 1,
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate =new DateTime(2024,12,2),
+					Comment = "Test Comment 1",
+					HasKey = true
+				},
+				new FilmStatus()
+				{
+					EventId = 2,
+					FilmId = 2,
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 2",
+					HasKey = true
+				},
+				new FilmStatus()
+				{
+					EventId = 2,
+					FilmId = 3,
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate =new DateTime(2024,12,2),
+					Comment = "Test Comment 3",
+					HasKey = true
+				},
+				new FilmStatus()
+				{
+					EventId = 2,
+					FilmId = 4,
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 4",
+					HasKey = true
+				},
+				new FilmStatus()
+				{
+					EventId = 2,
+					FilmId = 5,
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate =new DateTime(2024,12,2),
+					Comment = "Test Comment 5",
+					HasKey = false
+				},
+				new FilmStatus()
+				{
+					EventId = 2,
+					FilmId = 6,
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 6",
+					HasKey = false
+				}
+			};
+
+			foreach (var fs in filmStatuses)
+			{
+				if (!await dbContext.FilmStatuses.AnyAsync(e => e.EventId == fs.EventId))
+				{
+					await dbContext.FilmStatuses.AddAsync(fs);
 				}
 			}
 
