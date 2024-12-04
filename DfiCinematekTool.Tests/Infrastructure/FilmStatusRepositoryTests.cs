@@ -60,7 +60,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal(newFilmStatus.Comment, createdFilmStatus.Comment);
 
 			// Verify
-			var dbFilmStatus = await _filmStatusRepository.GetFilmStatusByIds(eventId, filmId);
+			var dbFilmStatus = await _filmStatusRepository.GetFilmStatusByIdsAsync(eventId, filmId);
 			Assert.NotNull(dbFilmStatus);
 		}
 
@@ -104,7 +104,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 		public async Task GetFilmStatusById_ReturnsFilmStatus(int eventId, int filmId)
 		{
 			// Act
-			var filmStatus = await _filmStatusRepository.GetFilmStatusByIds(eventId, filmId);
+			var filmStatus = await _filmStatusRepository.GetFilmStatusByIdsAsync(eventId, filmId);
 
 			// Assert
 			Assert.NotNull(filmStatus);
@@ -118,7 +118,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 		{
 			// Act & Assert
 			var exception = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
-				await _filmStatusRepository.GetFilmStatusByIds(0, 1));
+				await _filmStatusRepository.GetFilmStatusByIdsAsync(0, 1));
 
 			Assert.Equal("Event id cannot be 0. (Parameter 'eventId')", exception.Message);
 		}
@@ -129,7 +129,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 		{
 			// Act & Assert
 			var exception = await Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
-				await _filmStatusRepository.GetFilmStatusByIds(1, 0));
+				await _filmStatusRepository.GetFilmStatusByIdsAsync(1, 0));
 
 			Assert.Equal("Film id cannot be 0. (Parameter 'eventId')", exception.Message);
 		}
@@ -164,7 +164,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.False(result.HasKey);
 
 			// Verify
-			var dbFilmStatus = await _filmStatusRepository.GetFilmStatusByIds(eventId, filmId);
+			var dbFilmStatus = await _filmStatusRepository.GetFilmStatusByIdsAsync(eventId, filmId);
 			Assert.NotNull(dbFilmStatus);
 			Assert.Equal("Updated Comment", dbFilmStatus.Comment);
 		}
@@ -215,7 +215,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 
 			// Verify
 			var dbFilmStatus = await _filmStatusRepository
-				.GetFilmStatusByIds(eventId, filmId);
+				.GetFilmStatusByIdsAsync(eventId, filmId);
 			Assert.Null(dbFilmStatus);
 		}
 
@@ -233,7 +233,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 
 			// Verify
 			var filmStatsNotDeleted = await _filmStatusRepository
-				.GetFilmStatusByIds(eventId, filmId);
+				.GetFilmStatusByIdsAsync(eventId, filmId);
 			
 			Assert.Null(filmStatsNotDeleted);
 		}

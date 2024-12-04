@@ -62,7 +62,7 @@ namespace DfiCinematekTool.Application.Services
         {
             try
             {
-                return await _eventRepository.GetEventById(id);
+                return await _eventRepository.GetEventByIdAsync(id);
             }
             catch (Exception ex)
             {
@@ -76,7 +76,7 @@ namespace DfiCinematekTool.Application.Services
         {
             try
             {
-                return await _eventRepository.UpdateEvent(updatedEvent);
+                return await _eventRepository.UpdateEventAsync(updatedEvent);
             }
             catch (Exception ex)
             {
@@ -90,7 +90,7 @@ namespace DfiCinematekTool.Application.Services
         {
             try
             {
-                return await _eventRepository.DeleteEventById(id);
+                return await _eventRepository.DeleteEventByIdAsync(id);
             }
             catch (Exception ex)
             {

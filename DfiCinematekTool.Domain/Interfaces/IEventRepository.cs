@@ -8,11 +8,11 @@ namespace DfiCinematekTool.Domain.Interfaces
 
 	    Task<List<Event>> GetAllEventsAsync();
 
-	    Task<Event?> GetEventById(int id);
+	    Task<Event?> GetEventByIdAsync(int id);
 
-	    Task<Event?> UpdateEvent(Event updateEvent);
+	    Task<Event?> UpdateEventAsync(Event updateEvent);
 
-	    Task<bool> DeleteEventById(int id);
+	    Task<bool> DeleteEventByIdAsync(int id);
 
 	    Task<List<Event>> GetPaginatedEventsAsync(int pageNumber, int pageSize);
 	}

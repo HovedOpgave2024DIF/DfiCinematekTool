@@ -31,7 +31,7 @@ namespace DfiCinematekTool.Application.Services
         {
             try
             {
-                return await _filmStatusRepository.GetFilmStatusByIds(eventId, filmId);
+                return await _filmStatusRepository.GetFilmStatusByIdsAsync(eventId, filmId);
             }
             catch (Exception ex)
             {
@@ -59,7 +59,7 @@ namespace DfiCinematekTool.Application.Services
         {
             try
             {
-                return await _filmStatusRepository.DeleteFilmStatusAsync(int eventId, int filmId);
+                return await _filmStatusRepository.DeleteFilmStatusAsync(eventId, filmId);
             }
             catch (Exception ex)
             {
