@@ -5,13 +5,15 @@ using DfiCinematekTool.Infrastructure.Identity;
 using DfiCinematekTool.Infrastructure.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.CompilerServices;
+using Radzen;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddRadzenComponents();
 
 builder.Services.AddDbContext<CinematekDbContext>(options =>
 {
