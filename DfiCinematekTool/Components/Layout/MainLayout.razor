@@ -1,23 +1,55 @@
 ﻿@inherits LayoutComponentBase
+<RadzenComponents @rendermode="InteractiveServer" />
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
+	<RadzenHeader>
+		<RadzenRow JustifyContent="JustifyContent.Start" AlignItems="AlignItems.Center" Gap="0">
+			<RadzenColumn Size="5">
+				<RadzenSidebarToggle Click="@SidebarToggleClick"></RadzenSidebarToggle>
+			</RadzenColumn>
+			<RadzenColumn Size="7">
+				<RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Wrap="FlexWrap.Wrap" class="rz-pr-2">
+					<RadzenAppearanceToggle />
+				</RadzenStack>
+			</RadzenColumn>
+		</RadzenRow>
+	</RadzenHeader>
+	<RadzenBody Expanded="@sidebarExpanded">
+		<RadzenRow class="rz-mx-auto rz-px-4 rz-pt-2 rz-pt-md-4 rz-pt-lg-6 rz-pt-xl-5 rz-pb-2 rz-pb-lg-12" Style="max-width: 92vw; max-height: 90vh;">
+			<RadzenColumn Size="12">
+				@Body
+			</RadzenColumn>
+		</RadzenRow>
+	</RadzenBody>
+	<RadzenSidebar Expanded="@sidebarExpanded" Style="z-index: 2; width: 18vw; display: flex; flex-direction: column; justify-content: space-between;">
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+		<RadzenPanelMenu>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+			<RadzenPanelMenuItem Text="Dansk Film Institut" Path="/" Style="font-size: 1.2rem; height: 43px;" class="align-content-md-center rz-border-radius-2 m-2" />
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+			<RadzenPanelMenuItem Text="Cinematek" Icon="dashboard" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
+				<RadzenPanelMenuItem Text="Dashboard" Icon="view_list" Path="/weather" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+				<RadzenPanelMenuItem Text="Opret Event" Icon="add" Path="#" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+			</RadzenPanelMenuItem>
+
+
+			<RadzenPanelMenuItem Text="Admin" Icon="admin_panel_settings" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
+				<RadzenPanelMenuItem Text="Dashboard" Icon="id_card" Path="/counter" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+				<RadzenPanelMenuItem Text="Tilføj bruger" Icon="add" Path="#" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+			</RadzenPanelMenuItem>
+
+		</RadzenPanelMenu>
+
+		<RadzenStack Gap="0" class="rz-py-lg-16" JustifyContent="JustifyContent.End">
+			<RadzenText Text="Lasso v2.0.0" TextStyle="TextStyle.Caption" TagName="TagName.P" TextAlign="TextAlign.Center" />
+			<RadzenText Text="Copyright Ⓒ 2024" TextStyle="TextStyle.Caption" class="rz-mb-2" TagName="TagName.P" TextAlign="TextAlign.Center" />
+		</RadzenStack>
+
+	</RadzenSidebar>
+</RadzenLayout>
+
+
+@code
+{
+
+}
