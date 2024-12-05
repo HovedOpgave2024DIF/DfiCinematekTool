@@ -6,8 +6,7 @@ namespace DfiCinematekTool.Application.Services
          
     public class FilmStatusService
     {
-
-    private readonly IFilmStatusRepository _filmStatusRepository;
+	    private readonly IFilmStatusRepository _filmStatusRepository;
         public FilmStatusService(IFilmStatusRepository filmStatusRepository)
         {
             _filmStatusRepository = filmStatusRepository;
