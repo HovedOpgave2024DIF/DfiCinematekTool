@@ -50,7 +50,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				}
 			};
 
-			string[] roles = { "Admin", "User" };
+			string[] roles = ["Admin", "User"];
 
 			foreach (var user in users)
 			{
