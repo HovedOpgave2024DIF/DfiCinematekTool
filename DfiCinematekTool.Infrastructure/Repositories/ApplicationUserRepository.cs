@@ -45,7 +45,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 		public async Task<User?> GetUserByUserNameAsync(string userName)
 		{
-			if (!string.IsNullOrWhiteSpace(userName))
+			if (string.IsNullOrWhiteSpace(userName))
 				throw new ArgumentNullException(nameof(userName), "User name cannot be empty.");
 
 			if (int.TryParse(userName, out _))

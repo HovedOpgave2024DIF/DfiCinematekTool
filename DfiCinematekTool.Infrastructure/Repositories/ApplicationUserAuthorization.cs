@@ -8,7 +8,6 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 	public class ApplicationUserAuthorization : IAuthorization
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
-
 		public ApplicationUserAuthorization(UserManager<ApplicationUser> userManager)
 		{
 			_userManager = userManager;

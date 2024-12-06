@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 <RadzenComponents @rendermode="InteractiveServer" />
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Roles = "Admin")]
 
 <RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
 	<RadzenHeader>
@@ -21,35 +23,38 @@
 			</RadzenColumn>
 		</RadzenRow>
 	</RadzenBody>
-	<RadzenSidebar Expanded="@sidebarExpanded" Style="z-index: 2; width: 18vw; display: flex; flex-direction: column; justify-content: space-between;">
+    <AuthorizeView>
+        <Authorized>
+            <RadzenSidebar Expanded="@sidebarExpanded" Style="z-index: 2; width: 18vw; display: flex; flex-direction: column; justify-content: space-between;">
+                <RadzenPanelMenu>
+                    <RadzenPanelMenuItem Text="Dansk Film Institut" Path="/" Style="font-size: 1.2rem; height: 43px;" class="align-content-md-center rz-border-radius-2 m-2" />
 
-		<RadzenPanelMenu>
+                    <AuthorizeView Roles="Admin, User" Context="userContext">
+                        <Authorized Context="userAuthorizedContext">
+                            <RadzenPanelMenuItem Text="Cinematek" Icon="dashboard" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
+                                <RadzenPanelMenuItem Text="Dashboard" Icon="view_list" Path="/weather" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+                                <RadzenPanelMenuItem Text="Opret Event" Icon="add" Path="#" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+                            </RadzenPanelMenuItem>
+                        </Authorized>
+                    </AuthorizeView>
 
-			<RadzenPanelMenuItem Text="Dansk Film Institut" Path="/" Style="font-size: 1.2rem; height: 43px;" class="align-content-md-center rz-border-radius-2 m-2" />
+    
+                    <AuthorizeView Roles="Admin" Context="adminContext">
+                        <Authorized Context="adminAuthorizedContext">
+                            <RadzenPanelMenuItem Text="Admin" Icon="admin_panel_settings" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
+                                <RadzenPanelMenuItem Text="Dashboard" Icon="id_card" Path="/counter" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+                                <RadzenPanelMenuItem Text="Tilføj bruger" Icon="add" Path="#" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+                            </RadzenPanelMenuItem>
+                        </Authorized>
+                    </AuthorizeView>
+                </RadzenPanelMenu>
 
-			<RadzenPanelMenuItem Text="Cinematek" Icon="dashboard" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
-				<RadzenPanelMenuItem Text="Dashboard" Icon="view_list" Path="/weather" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
-				<RadzenPanelMenuItem Text="Opret Event" Icon="add" Path="#" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
-			</RadzenPanelMenuItem>
+                <RadzenStack Gap="0" class="rz-py-lg-16" JustifyContent="JustifyContent.End">
+                    <RadzenText Text="Lasso v2.0.0" TextStyle="TextStyle.Caption" TagName="TagName.P" TextAlign="TextAlign.Center" />
+                    <RadzenText Text="Copyright Ⓒ 2024" TextStyle="TextStyle.Caption" class="rz-mb-2" TagName="TagName.P" TextAlign="TextAlign.Center" />
+                </RadzenStack>
+            </RadzenSidebar>
+        </Authorized>
+    </AuthorizeView>
 
-
-			<RadzenPanelMenuItem Text="Admin" Icon="admin_panel_settings" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
-				<RadzenPanelMenuItem Text="Dashboard" Icon="id_card" Path="/counter" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
-				<RadzenPanelMenuItem Text="Tilføj bruger" Icon="add" Path="#" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
-			</RadzenPanelMenuItem>
-
-		</RadzenPanelMenu>
-
-		<RadzenStack Gap="0" class="rz-py-lg-16" JustifyContent="JustifyContent.End">
-			<RadzenText Text="Lasso v2.0.0" TextStyle="TextStyle.Caption" TagName="TagName.P" TextAlign="TextAlign.Center" />
-			<RadzenText Text="Copyright Ⓒ 2024" TextStyle="TextStyle.Caption" class="rz-mb-2" TagName="TagName.P" TextAlign="TextAlign.Center" />
-		</RadzenStack>
-
-	</RadzenSidebar>
 </RadzenLayout>
-
-
-@code
-{
-
-}
