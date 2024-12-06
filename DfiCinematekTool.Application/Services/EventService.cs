@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DfiCinematekTool.Application.Interfaces;
 using DfiCinematekTool.Domain.Entities;
 using DfiCinematekTool.Domain.Interfaces;
 
 namespace DfiCinematekTool.Application.Services
 {
-    public class EventService
+    public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
         public EventService(IEventRepository eventRepository)
@@ -99,6 +95,5 @@ namespace DfiCinematekTool.Application.Services
                 throw;
             }
         }
-
     }
 }

@@ -1,0 +1,69 @@
+﻿<RadzenRow Gap="0" class="rz-my-12 rz-mx-auto rz-border-radius-2 rz-shadow-10" Style="width: 100%; max-width: 1200px; overflow: hidden; background-color: #fff">
+
+	<RadzenColumn Size="12" SizeMD="4">
+
+		<RadzenCard class="rz-shadow-0 rz-border-radius-0 rz-text-align-left rz-p-5" Style="height: 100%; background-color: aqua;">
+
+			<RadzenText TextStyle="TextStyle.H6" class="rz-color-black">
+				@($"{Event.Date:dddd dd/MM/yyyy} KL: {Event.Date:HH:mm} ")
+			</RadzenText>
+			<RadzenText TextStyle="TextStyle.Body1" class="rz-color-black">
+				@($"{Event.Title}")
+			</RadzenText>
+
+
+			<RadzenText TextStyle="TextStyle.Body2" class="rz-color-black">
+				@Event.Screen
+			</RadzenText>
+
+			<RadzenText TextStyle="TextStyle.Body2" class="rz-color-black">
+				@Event.DurationInMinutes
+			</RadzenText>
+
+			<RadzenText TextStyle="TextStyle.Body2" class="rz-color-black">
+				@Event.Owner
+			</RadzenText>
+
+			<RadzenText TextStyle="TextStyle.Body2" class="rz-color-black">
+				@Event.EventType
+			</RadzenText>
+
+			<RadzenText TextStyle="TextStyle.Body2" class="rz-color-black">
+				@Event.IsRooftop
+			</RadzenText>
+
+		</RadzenCard>
+
+	</RadzenColumn>
+
+	<RadzenColumn Size="12" SizeMD="8">
+
+		<RadzenCard class="rz-shadow-0 rz-border-radius-0 rz-text-align-left rz-p-5">
+
+			<RadzenText TextStyle="TextStyle.DisplayH6" TagName="TagName.H6" class="rz-color-black rz-mb-6">
+				Filmvisninger
+			</RadzenText>
+
+			@foreach (var film in Event.Films ?? []) {
+				<RadzenText TextStyle="TextStyle.Body2" class="">
+					@film.Title
+					@film.OriginalTitle
+				</RadzenText>
+				<RadzenText TextStyle="TextStyle.Body2" class="">
+					@film.Format
+				</RadzenText>
+				<RadzenText TextStyle="TextStyle.Body2" class="">
+					@film.DurationInMinutes
+				</RadzenText>
+			}
+		</RadzenCard>
+
+	</RadzenColumn>
+
+</RadzenRow>
+
+@code {
+	[Parameter]
+	public Event Event { get; set; } = new();
+}
+

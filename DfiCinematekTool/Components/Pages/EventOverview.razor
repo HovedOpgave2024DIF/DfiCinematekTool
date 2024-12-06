@@ -1,0 +1,28 @@
+﻿@page "/EventOverview"
+@inject IEventService EventService
+@attribute [StreamRendering]
+
+<PageTitle>Event Overview</PageTitle>
+
+@if (Events == null) 
+{
+	<h3>Loading...</h3>
+}
+else 
+{
+	@foreach(var ev in Events)
+	{
+		<EventCard Event="@ev" />
+	}
+}
+
+
+
+@code {
+	private List<Event> Events { get; set; } = new();
+
+	protected override async Task OnInitializedAsync() 
+	{
+		Events = await EventService.GetAllEventsAsync();
+	}
+}
