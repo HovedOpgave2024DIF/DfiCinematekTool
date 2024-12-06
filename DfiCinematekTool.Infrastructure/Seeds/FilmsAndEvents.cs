@@ -45,6 +45,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				{
 					Title = "Salaam Film Festival",
 					DateId = 192934,
+					Date = new DateTime(2024, 11, 15, 9, 0, 0),
 					Screen = "Foyer",
 					DurationInMinutes = 360,
 					Owner = "FILMHUSET\\catharinab",
@@ -60,6 +61,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				{
 					Title = "Børnebiffen 3-5 år (1)",
 					DateId = 195213,
+					Date = new DateTime(2024, 11, 15, 10, 0, 0),
 					Screen = "Asta",
 					DurationInMinutes = 45,
 					Owner = "FILMHUSET\\christianh",

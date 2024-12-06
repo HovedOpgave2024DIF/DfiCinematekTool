@@ -9,6 +9,7 @@ namespace DfiCinematekTool.Application
 		public static IServiceCollection AddApplication(this IServiceCollection services)
 		{
 			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<IEventService, EventService>();
 			return services;
 		}
 	}
