@@ -6,6 +6,7 @@ using DfiCinematekTool.Infrastructure.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
+using DfiCinematekTool.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,18 +21,37 @@ builder.Services.AddDbContext<CinematekDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("CinematekConnection"));
 });
 
-// Infrastructure dependencies
-builder.Services.AddInfrastructure();
+builder.Services.AddSingleton<LoginStateService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredLength = 6;
+	options.Password.RequireDigit = true;
+	options.Password.RequireLowercase = true;
+	options.Password.RequireUppercase = true;
+	options.Password.RequireNonAlphanumeric = true;
+	options.Password.RequiredLength = 6;
+	options.SignIn.RequireConfirmedEmail = false;
 
+	options.Lockout.MaxFailedAccessAttempts = 5;
+	options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+	options.Lockout.AllowedForNewUsers = true;
+
+	options.User.RequireUniqueEmail = true;
 }).AddEntityFrameworkStores<CinematekDbContext>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+	options.Cookie.Name = "DfiAuth";
+	options.Cookie.HttpOnly = true;
+	options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+	options.ExpireTimeSpan = TimeSpan.FromMinutes(120);
+	options.SlidingExpiration = true;
+	options.LoginPath = "/Login";
+	options.AccessDeniedPath = "/AccessDenied";
+});
+
+// Infrastructure dependencies
+builder.Services.AddInfrastructure();
 
 // Application dependencies
 builder.Services.AddApplication();
@@ -52,9 +72,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseAntiforgery();
-app.UseAuthentication();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()

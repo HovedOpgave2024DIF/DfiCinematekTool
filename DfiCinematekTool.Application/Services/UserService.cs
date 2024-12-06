@@ -1,9 +1,10 @@
-﻿using DfiCinematekTool.Domain.Entities;
+﻿using DfiCinematekTool.Application.Interfaces;
+using DfiCinematekTool.Domain.Entities;
 using DfiCinematekTool.Domain.Interfaces;
 
 namespace DfiCinematekTool.Application.Services
 {
-	public class UserService
+	public class UserService : IUserService
 	{
 		private readonly IUserRepository _userRepository;
 

@@ -1,0 +1,51 @@
+﻿@page "/AuthenticateUser"
+@inject SignInManager<ApplicationUser> SignInManager
+@inject NavigationManager Navigation
+@inject IUserService UserService
+@inject LoginStateService LoginState
+
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        var username = LoginState.Username;
+        var password = LoginState.Password;
+
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+        {
+            Console.WriteLine("Missing credentials."); // Add Toaster
+            Navigation.NavigateTo("/Login");
+            return;
+        }
+
+        await PerformLogin(username, password);
+    }
+
+    private async Task PerformLogin(string Username, string Password)
+    {
+        var user = await UserService.GetUserByUserNameAsync(Username);
+        if (user is null)
+        {
+            Console.WriteLine("User not found.");  // Toaster
+            Navigation.NavigateTo("/Login");
+            return;
+        }
+
+        var result = await SignInManager.PasswordSignInAsync(user.UserName, Password, false, false);
+        if (result.Succeeded)
+        {
+            Console.WriteLine("Sign-in successful."); // Toaster
+            Navigation.NavigateTo("/", forceLoad: true);
+        }
+        else if (result.IsLockedOut)
+        {
+            Console.WriteLine("User is locked out."); // Toaster
+            Navigation.NavigateTo("/Login");
+        }
+        else
+        {
+            Console.WriteLine("Invalid login attempt."); // Toaster
+            Navigation.NavigateTo("/Login");
+        }
+    }
+}
