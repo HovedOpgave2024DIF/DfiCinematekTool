@@ -1,0 +1,144 @@
+﻿
+@inject IEventRepository Repository
+
+@if(Event is not null)
+{
+	<EditForm Enhance="true" method="post" FormName="CreateOrEditEventForm" OnValidSubmit="CreateOrEditEvent" Model="Event" autocomplete="off">
+		<h3>
+			@Title
+		</h3>
+		@if (IsEditMode)
+		{
+			<input type="hidden" name="Book.Id" value="@Event.Id" />
+		}
+		<div class="mb-3">
+			<label for="title" class="form_label">
+				Title
+			</label>
+			<InputText id="title" @bind-Value="Event.Title" class="form-control shadow-none">
+
+			</InputText>
+		</div>
+
+		<div class="mb-3">
+			<label for="duration" class="form_label">
+				Duration
+			</label>
+			<InputNumber id="duration" @bind-Value="Event.DurationInMinutes" class="form-control shadow-none">
+
+			</InputNumber>
+		</div>
+
+
+
+		<div class="mb-3">
+			<label for="date" class="form_label">
+				 Date
+			</label>
+			<InputDate id="date" @bind-Value="Event.DateId" class="form-control shadow-none">
+
+			</InputDate>
+		</div>
+
+
+		<div class="mb-3">
+			<label for="EventType" class="form_label">
+				Category
+			</label>
+			<InputSelect id="eventType" @bind-Value="Event.EventType" class="form-control shadow-none">
+				<option value="0">
+					Select Category
+				</option>
+				@foreach (var eventType in Enum.GetValues(typeof(EventType)))
+				{
+					<option value="@eventType">
+						@eventType.ToString()
+					</option>
+				}
+			</InputSelect>
+		</div>
+
+		<div class="mb-3">
+			<label for="Screen" class="form_label">
+				Screen
+			</label>
+			<InputSelect id="screen" @bind-Value="Event.Screen" class="form-control shadow-none">
+				<option value="0">
+					Select Screen
+				</option>
+				@foreach (var screen in Enum.GetValues(typeof(Screen)))
+				{
+					<option value="@screen">
+						@screen.ToString()
+					</option>
+				}
+			</InputSelect>
+		</div>
+
+		<div class="mb-3">
+			<label for="Screen" class="form_label">
+				Screen
+			</label>
+			<InputSelect id="screen" @bind-Value="Event.Screen" class="form-control shadow-none">
+				<option value="0">
+					Select Screen
+				</option>
+				@foreach (var screen in Enum.GetValues(typeof(Screen)))
+				{
+					<option value="@screen">
+						@screen.ToString()
+					</option>
+				}
+			</InputSelect>
+		</div>
+
+
+
+
+		<div class=" mb-3">
+			<button class="btn-primary shadow-none">
+				Submit
+			</button>
+			<a href="/" class="btn btn-secondary shadow-none ms-3">
+				Back to list
+			</a>
+		</div>
+		<DataAnnotationsValidator />
+		<ValidationSummary />
+	</EditForm>
+}
+
+@code {
+	[Parameter]
+	public bool IsEditMode { get; set; } = false;
+
+	[Parameter]
+	public int EventId { get; set; }
+
+	[Parameter]
+	public EventCallback<Event> OnValidEventSubmit { get; set; }
+
+	[SupplyParameterFromForm]
+	public Event? Event { get; set; }
+
+	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Book";
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (IsEditMode)
+		{
+			Event ??= await Repository.GetEventByIdAsync(EventId);
+		}
+		else
+		{
+			Event ??= new();
+		}
+	}
+
+
+	private async Task CreateOrEditEvent()
+	{
+		await OnValidEventSubmit.InvokeAsync(Event);
+	}
+
+}
