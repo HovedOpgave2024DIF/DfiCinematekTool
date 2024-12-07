@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DfiCinematekTool.Domain.Enums
+﻿namespace DfiCinematekTool.Domain.Enums
 {
-    internal class Screen
-    {
+ 
+        public enum Screen
+        {
+            Screen1 = 1,
+            Screen2,
+            Screen3
+        }
+
     }
-}

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DfiCinematekTool.Domain.Enums
+﻿namespace DfiCinematekTool.Domain.Enums
 {
-    internal class EventTyoe
-    {
-    }
+  
+        public enum EventType
+        {
+            Regular = 1,
+            Premiere,
+            Festival
+        }
+ 
 }
