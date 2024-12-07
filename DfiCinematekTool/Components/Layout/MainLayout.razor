@@ -11,13 +11,22 @@
 			</RadzenColumn>
 			<RadzenColumn Size="7">
 				<RadzenStack AlignItems="AlignItems.Center" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.End" Wrap="FlexWrap.Wrap" class="rz-pr-2">
+                   <AuthorizeView>
+                        <RadzenRow Gap="12" class="rz-mr-4">
+                            <RadzenText class="rz-my-2">Logged in:</RadzenText>
+                            <strong class="rz-my-2">@context?.User?.Identity?.Name</strong>
+                            <a href="#">
+                                <RadzenIcon class="rz-my-2 rz-mr-0" Icon="logout" style="font-weight: 600; color: dimgray"/>
+                            </a>
+                        </RadzenRow>
+                   </AuthorizeView>
 					<RadzenAppearanceToggle />
 				</RadzenStack>
 			</RadzenColumn>
 		</RadzenRow>
 	</RadzenHeader>
 	<RadzenBody Expanded="@sidebarExpanded">
-		<RadzenRow class="rz-mx-auto rz-px-4 rz-pt-2 rz-pt-md-4 rz-pt-lg-6 rz-pt-xl-5 rz-pb-2 rz-pb-lg-12" Style="max-width: 92vw; max-height: 90vh;">
+		<RadzenRow class="rz-mx-auto rz-px-4 rz-pt-2 rz-pt-md-4 rz-pt-lg-6 rz-pt-xl-5 rz-pb-2 rz-pb-lg-12" Style="max-width: 100vw; max-height: 90vh;">
 			<RadzenColumn Size="12">
 				@Body
 			</RadzenColumn>

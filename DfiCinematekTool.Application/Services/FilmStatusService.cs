@@ -1,10 +1,11 @@
-﻿using DfiCinematekTool.Domain.Entities;
+﻿using DfiCinematekTool.Application.Interfaces;
+using DfiCinematekTool.Domain.Entities;
 using DfiCinematekTool.Domain.Interfaces;
 
 namespace DfiCinematekTool.Application.Services
 {
          
-    public class FilmStatusService
+    public class FilmStatusService : IFilmStatusService
     {
 	    private readonly IFilmStatusRepository _filmStatusRepository;
         public FilmStatusService(IFilmStatusRepository filmStatusRepository)
