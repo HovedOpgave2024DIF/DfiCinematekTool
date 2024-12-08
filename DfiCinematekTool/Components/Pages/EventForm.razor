@@ -1,5 +1,6 @@
-﻿
-@inject IEventRepository Repository
+﻿@inject IEventRepository Repository
+@inject IUserRepository RepositoryUser
+@inject IFilmRepository RepositoryFilm
 
 @if(Event is not null)
 {
@@ -11,6 +12,8 @@
 		{
 			<input type="hidden" name="Book.Id" value="@Event.Id" />
 		}
+
+
 		<div class="mb-3">
 			<label for="title" class="form_label">
 				Title
@@ -18,6 +21,49 @@
 			<InputText id="title" @bind-Value="Event.Title" class="form-control shadow-none">
 
 			</InputText>
+		</div>
+
+		<div class="mb-3">
+			<label for="abbriviation" class="form_label">
+				Abbriviation
+			</label>
+			<InputText id="abbriviation" @bind-Value="Event.Abbriviation" class="form-control shadow-none">
+
+			</InputText>
+		</div>
+
+		<div class="mb-3">
+			<label for="owner" class="form_label">
+				Owner
+			</label>
+			<InputSelect id="Owner" @bind-Value="Event.Owner" class="form-control shadow-none">
+				<option value="0">
+					Select Owner
+				</option>
+				@foreach (var userName in UserNames)
+				{
+					<option value="@userName">
+						userName
+					</option>
+				}
+			</InputSelect>
+		</div>
+
+		<div class="mb-3">
+			<label for="ownerMail" class="form_label">
+				Owner mail
+			</label>
+			<InputSelect id="ownerMail" @bind-Value="Event.OwnerEmail" class="form-control shadow-none">
+				<option value="0">
+					Select Owners email
+				</option>
+				@foreach (var userEmail in UserEmail)
+				{
+					<option value="@userEmail">
+						userEmail
+					</option>
+				}
+			</InputSelect>
 		</div>
 
 		<div class="mb-3">
@@ -30,10 +76,9 @@
 		</div>
 
 
-
 		<div class="mb-3">
 			<label for="date" class="form_label">
-				 Date
+				Date
 			</label>
 			<InputDate id="date" @bind-Value="Event.DateId" class="form-control shadow-none">
 
@@ -76,21 +121,33 @@
 		</div>
 
 		<div class="mb-3">
-			<label for="Screen" class="form_label">
-				Screen
+			<label for="isEvent" class="form_label">
+				Is event
 			</label>
-			<InputSelect id="screen" @bind-Value="Event.Screen" class="form-control shadow-none">
-				<option value="0">
-					Select Screen
-				</option>
-				@foreach (var screen in Enum.GetValues(typeof(Screen)))
-				{
-					<option value="@screen">
-						@screen.ToString()
-					</option>
-				}
-			</InputSelect>
+			<input type="checkbox" id="isEvent" @bind="Event.IsEvent" class="form-control shadow-none" />
 		</div>
+
+		<div class="mb-3">
+			<label for="isRooftop" class="form_label">
+				Is Rooftop
+			</label>
+			<input type="checkbox" id="isRooftop" @bind="Event.IsRooftop" class="form-control shadow-none" />
+		</div>
+
+		<!-- TODO double check if this saves the list correctly.-->
+		<div class="mb-3">
+			<label for="films" class="form_label">
+				Films
+			</label>
+
+			@foreach (var film in Films) {
+				<input type="checkbox" id="film" bind="Event.Films" class="form-control shadow-none" @ />
+				<label for="Film-selection" class="form_label">@film.Title</label>			
+			}
+
+		
+		</div>
+
 
 
 
@@ -115,16 +172,34 @@
 	[Parameter]
 	public int EventId { get; set; }
 
+
 	[Parameter]
 	public EventCallback<Event> OnValidEventSubmit { get; set; }
+
+	[Parameter]
+	public List<String> UserNames { get; set; }
+
+	[Parameter]
+	public List<String> UserEmail { get; set; }
+
+
+	[Parameter]
+	public List<Film> Films { get; set; }/* = new List<string>();*/
+
 
 	[SupplyParameterFromForm]
 	public Event? Event { get; set; }
 
-	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Book";
+	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Event";
 
 	protected override async Task OnInitializedAsync()
 	{
+		var users = await RepositoryUser.GetAllUsersAsync();
+		UserNames = users.Select(user => user.UserName).ToList();
+		UserEmail = users.Select(user => user.Email).ToList();
+
+		var Films = await RepositoryFilm.GetAllFilmsAsync();
+
 		if (IsEditMode)
 		{
 			Event ??= await Repository.GetEventByIdAsync(EventId);
@@ -138,7 +213,12 @@
 
 	private async Task CreateOrEditEvent()
 	{
+	
+
+
 		await OnValidEventSubmit.InvokeAsync(Event);
 	}
+
+
 
 }
