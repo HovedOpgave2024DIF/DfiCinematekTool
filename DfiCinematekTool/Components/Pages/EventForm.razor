@@ -80,9 +80,9 @@
 			<label for="date" class="form_label">
 				Date
 			</label>
-			<InputDate id="date" @bind-Value="Event.DateId" class="form-control shadow-none">
+			<InputNumber id="date" @bind-Value="Event.DateId" class="form-control shadow-none">
 
-			</InputDate>
+			</InputNumber>
 		</div>
 
 
@@ -141,11 +141,11 @@
 			</label>
 
 			@foreach (var film in Films) {
-				<input type="checkbox" id="film" bind="Event.Films" class="form-control shadow-none" @ />
-				<label for="Film-selection" class="form_label">@film.Title</label>			
+				<input type="checkbox" id="film - @film.Id" bind="Event.Films" class="form-control shadow-none" @onchange="(e) => OnFilmSelectionChanged(e, film)" />
+				<label for="Film - @film.Id" class="form_label">@film.Title</label>			
 			}
 
-		
+
 		</div>
 
 
@@ -182,9 +182,9 @@
 	[Parameter]
 	public List<String> UserEmail { get; set; }
 
-
 	[Parameter]
-	public List<Film> Films { get; set; }/* = new List<string>();*/
+	public List<Film> Films { get; set; }
+
 
 
 	[SupplyParameterFromForm]
@@ -194,11 +194,12 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+
 		var users = await RepositoryUser.GetAllUsersAsync();
 		UserNames = users.Select(user => user.UserName).ToList();
 		UserEmail = users.Select(user => user.Email).ToList();
 
-		var Films = await RepositoryFilm.GetAllFilmsAsync();
+		Films = await RepositoryFilm.GetAllFilmsAsync();
 
 		if (IsEditMode)
 		{
@@ -210,6 +211,33 @@
 		}
 	}
 
+	List<Film> FilmsToAdd = new List<Film>();
+	public void OnFilmSelectionChanged(ChangeEventArgs e, Film film) 
+	{
+		
+
+		if ((bool)e.Value)
+		{
+			if (!FilmsToAdd.Exists(f => f.Title == film.Title))
+			{
+				FilmsToAdd.Add(film);
+			}
+		}
+		else
+		{
+			var FilmToRemove = FilmsToAdd.FirstOrDefault(f => f.Title == film.Title);
+			if (FilmToRemove != null)
+			{
+				FilmsToAdd.Remove(FilmToRemove);
+			}
+		}
+		/*{
+			if (FilmsToAdd.Exists(f => f.Title == film.Title))
+			{
+				FilmsToAdd.Remove(film);
+			}
+		}*/
+	}
 
 	private async Task CreateOrEditEvent()
 	{
