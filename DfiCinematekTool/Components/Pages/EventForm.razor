@@ -86,13 +86,13 @@
 
 
 		<div class="mb-3">
-			<RadzenLabel Text="Is Event?" Component="IsEventCheck" class="rz-ms-2" />
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Is Event?</RadzenText>
 			<RadzenCheckBox TValue="bool" @bind-Value=Event.IsEvent Change=@(args => Event.IsEvent = args) Name="IsEventCheck"></RadzenCheckBox>
 		</div>
 
 
 		<div class="mb-3">
-			<RadzenLabel Text="Is Rooftop?" Component="IsRooftopCheck" class="rz-ms-2" />
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Is Rooftop?</RadzenText>
 			<RadzenCheckBox TValue="bool" @bind-Value=Event.IsRooftop Change=@(args => Event.IsRooftop = args) Name="IsRooftopCheck"></RadzenCheckBox>
 		</div>
 
