@@ -1,18 +1,15 @@
-﻿@inject IFilmStatusService FilmStatusService
-@rendermode InteractiveServer
-
-<RadzenRow Gap="2rem" Style="display: flex; flex-wrap: nowrap; align-items: center;">
+﻿<RadzenRow Gap="2rem" Style="display: flex; flex-wrap: nowrap; align-items: center;">
 
     <RadzenCheckBox @bind-Value="FilmStatus.HasKey" Style="width: 35px; height: 35px;" />
 
     <RadzenDatePicker @bind-Value="FilmStatus.ReceivedDate" DateFormat="MM/dd/yyyy" Name="DatePickerDateOnlyType" Style="width: 110px; height: 40px;" />
-    
+
     <RadzenDatePicker @bind-Value="FilmStatus.PreparedDate" DateFormat="MM/dd/yyyy" Name="DatePickerDateOnlyType" Style="width: 110px; height: 40px;" />
-   
+
     <RadzenDatePicker @bind-Value="FilmStatus.CheckedDate" DateFormat="MM/dd/yyyy" Name="DatePickerDateOnlyType" Style="width: 110px; height: 40px;" />
-    
-    <RadzenTextArea @bind-Value="FilmStatus.Comment" Style="max-width: 50%; height: 35px;" aria-label="Kommentar" />
-    
+
+    <RadzenTextArea @bind-Value="FilmStatus.Comment" Style="max-width: 60%; height: 35px;" aria-label="Kommentar" />
+
     <RadzenButton Click="HandleUpdate" ButtonType="ButtonType.Submit" Icon="update" Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary" Style="width: 35px; height: 35px;" />
 
 </RadzenRow>
@@ -22,7 +19,10 @@
     [Parameter]
     public FilmStatus FilmStatus { get; set; } = new();
 
+    [Parameter]
+    public EventCallback<FilmStatus> OnValidFilmStatusSumbit { get; set; }
+
     private async Task HandleUpdate() {
-        await FilmStatusService.UpdateFilmStatusAsync(FilmStatus);
+        await OnValidFilmStatusSumbit.InvokeAsync(FilmStatus);
     }
 }

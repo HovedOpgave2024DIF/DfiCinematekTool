@@ -16,7 +16,7 @@
                             <RadzenText class="rz-my-2">Logged in:</RadzenText>
                             <strong class="rz-my-2">@context?.User?.Identity?.Name</strong>
                             <a href="#">
-                                <RadzenIcon class="rz-my-2 rz-mr-0" Icon="logout" style="font-weight: 600; color: dimgray"/>
+                                <RadzenIcon class="rz-my-2 rz-mr-0" Icon="logout" style="font-weight: 600; color: dimgray;"/>
                             </a>
                         </RadzenRow>
                    </AuthorizeView>
@@ -34,7 +34,7 @@
 	</RadzenBody>
     <AuthorizeView>
         <Authorized>
-            <RadzenSidebar Expanded="@sidebarExpanded" Style="z-index: 2; width: 18vw; display: flex; flex-direction: column; justify-content: space-between;">
+            <RadzenSidebar class="rz-color-grey" Expanded="@sidebarExpanded" Style="z-index: 2; width: 18vw; display: flex; flex-direction: column; justify-content: space-between;">
                 <RadzenPanelMenu>
                     <RadzenPanelMenuItem Text="Dansk Film Institut" Path="/" Style="font-size: 1.2rem; height: 43px;" class="align-content-md-center rz-border-radius-2 m-2" />
 

@@ -15,6 +15,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
+builder.Services.AddRadzenCookieThemeService();
 
 builder.Services.AddDbContext<CinematekDbContext>(options =>
 {
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<CinematekDbContext>(options =>
 });
 
 builder.Services.AddSingleton<LoginStateService>();
+builder.Services.AddScoped<ToasterService>();
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
