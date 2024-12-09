@@ -1,8 +1,14 @@
 ﻿@page "/EventOverview"
 @inject IEventService EventService
-@attribute [StreamRendering]
+@inject IFilmStatusService FilmStatusService
+@inject ToasterService Toaster
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <PageTitle>Event Overview</PageTitle>
+
+<RadzenRow class="rz-mb-6">
+	<RadzenButton Click=@(() => {}) Text="Opret event" Icon="add" Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" />
+</RadzenRow>
 
 @if (Events == null) 
 {
@@ -10,19 +16,50 @@
 }
 else 
 {
-	@foreach(var ev in Events)
+	@foreach(var EventFilmStatus in EventFilmStatuses)
 	{
-		<EventCard Event="@ev" />
+		<EventCard EventFilmStatus="EventFilmStatus" OnUpdateFilmStatus="UpdateFilmStatus"  />
 	}
 }
-
-
 
 @code {
 	private List<Event> Events { get; set; } = new();
 
+	private List<(Event, List<FilmStatus>)> EventFilmStatuses { get; set; } = new();
+
 	protected override async Task OnInitializedAsync() 
 	{
 		Events = await EventService.GetAllEventsAsync();
+
+		foreach (var ev in Events) 
+		{
+			var filmStatusesFound = new List<FilmStatus>();
+
+			if (ev.Films is not null && ev.Films.Count > 0) {
+
+				foreach (var film in ev.Films!)
+				{
+					var result = await FilmStatusService.GetFilmStatusByIds(ev.Id, film.Id);
+
+					if (result is not null)
+						filmStatusesFound.Add(result);
+				}
+			}
+			EventFilmStatuses.Add((ev, filmStatusesFound));
+		}
+	}
+
+	private async Task UpdateFilmStatus(FilmStatus filmStatus) 
+	{
+		var result = await FilmStatusService.UpdateFilmStatusAsync(filmStatus);
+
+		if (result is not null) 
+		{
+			Toaster.OnSuccess(
+				"Filmstatus opdateret",
+				$"Filmstatus for {result?.Film?.Title} tilhørende event {result?.Event?.Title} er opdateret.",
+				6000
+			);
+		}
 	}
 }

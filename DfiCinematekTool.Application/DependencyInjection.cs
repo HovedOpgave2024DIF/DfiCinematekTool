@@ -10,6 +10,7 @@ namespace DfiCinematekTool.Application
 		{
 			services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IEventService, EventService>();
+			services.AddScoped<IFilmStatusService, FilmStatusService>();
 			return services;
 		}
 	}
