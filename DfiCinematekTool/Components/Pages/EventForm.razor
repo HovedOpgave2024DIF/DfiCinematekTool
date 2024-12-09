@@ -15,140 +15,86 @@
 
 
 		<div class="mb-3">
-			<label for="title" class="form_label">
-				Title
-			</label>
-			<InputText id="title" @bind-Value="Event.Title" class="form-control shadow-none">
-
-			</InputText>
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event title</RadzenText>
+			<RadzenTextBox @bind-Value=@Event.Title Style="width: 100%" aria-label="Default TextBox" />
 		</div>
 
 		<div class="mb-3">
-			<label for="abbriviation" class="form_label">
-				Abbriviation
-			</label>
 			<InputText id="abbriviation" @bind-Value="Event.Abbriviation" class="form-control shadow-none">
 
 			</InputText>
+
+		
+				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event abbriviation</RadzenText>
+				<RadzenTextBox @bind-Value=@Event.Abbriviation Style="width: 100%" aria-label="Default TextBox" />
+			
 		</div>
 
-		<div class="mb-3">
-			<label for="owner" class="form_label">
-				Owner
-			</label>
-			<InputSelect id="Owner" @bind-Value="Event.Owner" class="form-control shadow-none">
-				<option value="0">
-					Select Owner
-				</option>
-				@foreach (var userName in UserNames)
-				{
-					<option value="@userName">
-						userName
-					</option>
-				}
-			</InputSelect>
-		</div>
+
+
 
 		<div class="mb-3">
-			<label for="ownerMail" class="form_label">
-				Owner mail
-			</label>
-			<InputSelect id="ownerMail" @bind-Value="Event.OwnerEmail" class="form-control shadow-none">
-				<option value="0">
-					Select Owners email
-				</option>
-				@foreach (var userEmail in UserEmail)
-				{
-					<option value="@userEmail">
-						userEmail
-					</option>
-				}
-			</InputSelect>
-		</div>
-
-		<div class="mb-3">
-			<label for="duration" class="form_label">
-				Duration
-			</label>
-			<InputNumber id="duration" @bind-Value="Event.DurationInMinutes" class="form-control shadow-none">
-
-			</InputNumber>
+			
+			
+				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event owner</RadzenText>
+				<RadzenDropDown @bind-Value=@Event.Owner Data=@UserNames Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
+			
 		</div>
 
 
 		<div class="mb-3">
-			<label for="date" class="form_label">
-				Date
-			</label>
-			<InputNumber id="date" @bind-Value="Event.DateId" class="form-control shadow-none">
+			
+			
+				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Owner Email</RadzenText>
+				<RadzenDropDown @bind-Value=@Event.OwnerEmail Data=@UserEmail Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
+			
+		</div>
 
-			</InputNumber>
+		<div class="mb-3">
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Duration in minutes</RadzenText>
+			<RadzenNumeric @bind-Value=@Event.DurationInMinutes TValue="int" ShowUpDown="false" Placeholder="In minutes" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+		</div>
+
+
+
+		<div class="mb-3">
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Date (DDMMYY)</RadzenText>
+			<RadzenNumeric @bind-Value=@Event.DateId TValue="int" ShowUpDown="false" Placeholder="DDMMYY" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+
 		</div>
 
 
 		<div class="mb-3">
-			<label for="EventType" class="form_label">
-				Category
-			</label>
-			<InputSelect id="eventType" @bind-Value="Event.EventType" class="form-control shadow-none">
-				<option value="0">
-					Select Category
-				</option>
-				@foreach (var eventType in Enum.GetValues(typeof(EventType)))
-				{
-					<option value="@eventType">
-						@eventType.ToString()
-					</option>
-				}
-			</InputSelect>
+			
+			
+				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event type</RadzenText>
+				<RadzenDropDown @bind-Value=@Event.EventType Data=@EventTypeEnums Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
+			
 		</div>
+
 
 		<div class="mb-3">
-			<label for="Screen" class="form_label">
-				Screen
-			</label>
-			<InputSelect id="screen" @bind-Value="Event.Screen" class="form-control shadow-none">
-				<option value="0">
-					Select Screen
-				</option>
-				@foreach (var screen in Enum.GetValues(typeof(Screen)))
-				{
-					<option value="@screen">
-						@screen.ToString()
-					</option>
-				}
-			</InputSelect>
+			
+			
+				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Screen</RadzenText>
+				<RadzenDropDown @bind-Value=@Event.Screen Data=@ScreenEnums Style="width: 100%; max-width: 400px;" Name="ScreenDropdown" />
+			
+
 		</div>
+
+
+
 
 		<div class="mb-3">
-			<label for="isEvent" class="form_label">
-				Is event
-			</label>
-			<input type="checkbox" id="isEvent" @bind="Event.IsEvent" class="form-control shadow-none" />
+			<RadzenLabel Text="Is Event?" Component="IsEventCheck" class="rz-ms-2" />
+			<RadzenCheckBox TValue="bool" @bind-Value=Event.IsEvent Change=@(args => Event.IsEvent = args) Name="IsEventCheck"></RadzenCheckBox>
 		</div>
+
 
 		<div class="mb-3">
-			<label for="isRooftop" class="form_label">
-				Is Rooftop
-			</label>
-			<input type="checkbox" id="isRooftop" @bind="Event.IsRooftop" class="form-control shadow-none" />
+			<RadzenLabel Text="Is Rooftop?" Component="IsRooftopCheck" class="rz-ms-2" />
+			<RadzenCheckBox TValue="bool" @bind-Value=Event.IsRooftop Change=@(args => Event.IsRooftop = args) Name="IsRooftopCheck"></RadzenCheckBox>
 		</div>
-
-		<!-- TODO double check if this saves the list correctly.-->
-		<div class="mb-3">
-			<label for="films" class="form_label">
-				Films
-			</label>
-
-			@foreach (var film in Films) {
-				<input type="checkbox" id="film - @film.Id" bind="Event.Films" class="form-control shadow-none" @onchange="(e) => OnFilmSelectionChanged(e, film)" />
-				<label for="Film - @film.Id" class="form_label">@film.Title</label>			
-			}
-
-
-		</div>
-
-
 
 
 
@@ -182,8 +128,11 @@
 	[Parameter]
 	public List<String> UserEmail { get; set; }
 
-	[Parameter]
-	public List<Film> Films { get; set; }
+	
+	public List<string> ScreenEnums = Enum.GetValues(typeof(Screen)).Cast<Screen>().Select(s => s.ToString()).ToList();
+
+	public List<string> EventTypeEnums = Enum.GetValues(typeof(EventType)).Cast<EventType>().Select(e => e.ToString()).ToList();
+
 
 
 
@@ -199,7 +148,7 @@
 		UserNames = users.Select(user => user.UserName).ToList();
 		UserEmail = users.Select(user => user.Email).ToList();
 
-		Films = await RepositoryFilm.GetAllFilmsAsync();
+		
 
 		if (IsEditMode)
 		{
@@ -209,34 +158,6 @@
 		{
 			Event ??= new();
 		}
-	}
-
-	List<Film> FilmsToAdd = new List<Film>();
-	public void OnFilmSelectionChanged(ChangeEventArgs e, Film film) 
-	{
-		
-
-		if ((bool)e.Value)
-		{
-			if (!FilmsToAdd.Exists(f => f.Title == film.Title))
-			{
-				FilmsToAdd.Add(film);
-			}
-		}
-		else
-		{
-			var FilmToRemove = FilmsToAdd.FirstOrDefault(f => f.Title == film.Title);
-			if (FilmToRemove != null)
-			{
-				FilmsToAdd.Remove(FilmToRemove);
-			}
-		}
-		/*{
-			if (FilmsToAdd.Exists(f => f.Title == film.Title))
-			{
-				FilmsToAdd.Remove(film);
-			}
-		}*/
 	}
 
 	private async Task CreateOrEditEvent()
