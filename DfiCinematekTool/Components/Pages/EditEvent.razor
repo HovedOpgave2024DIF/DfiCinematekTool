@@ -1,4 +1,4 @@
-﻿@page "/edit-event"
+﻿@page "/edit-event/{id:int}"
 @inject IEventRepository EventRepository
 @inject NavigationManager Navigation
 
@@ -6,13 +6,19 @@
 	Edit Event
 </PageTitle>
 
-<div class="row justify-content-center">
-	<div class="col-6">
-		<EventForm IsEditMode="true" OnValidEventSubmit="EditExistingEvent"></EventForm>
+
+	<div class="row justify-content-center">
+		<div class="col-6">
+			<EventForm IsEditMode="true" OnValidEventSubmit="EditExistingEvent"></EventForm>
+		</div>
 	</div>
-</div>
+
 
 @code {
+
+	[Parameter]
+	public int Id { get; set; }
+
 
 	private async Task EditExistingEvent(Event eventToEdit)
 	{
