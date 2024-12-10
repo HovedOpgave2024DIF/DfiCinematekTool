@@ -1,11 +1,10 @@
-﻿@page "/AuthenticateUser"
+﻿@page "/Login/Authenticate"
 @inject SignInManager<ApplicationUser> SignInManager
 @inject NavigationManager Navigation
 @inject IUserService UserService
 @inject LoginStateService LoginState
 
 @code {
-
     protected override async Task OnInitializedAsync()
     {
         var username = LoginState.Username;

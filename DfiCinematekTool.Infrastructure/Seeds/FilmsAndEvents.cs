@@ -84,7 +84,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 
 			foreach (var ev in events)
 			{
-				if (!await dbContext.Events.AnyAsync(e => e.Id == ev.Id))
+				if (!await dbContext.Events.AnyAsync(e => e.Title == ev.Title))
 				{
 					var attachedFilms = new List<Film>();
 
@@ -121,6 +121,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				{
 					EventId = 2,
 					FilmId = 1,
+					OrderDate = new DateTime(2024,12,2),
 					ReceivedDate = new DateTime(2024,12,2),
 					CheckedDate = new DateTime(2024,12,2),
 					PreparedDate =new DateTime(2024,12,2),
@@ -131,6 +132,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				{
 					EventId = 2,
 					FilmId = 2,
+					OrderDate = new DateTime(2024,12,2),
 					ReceivedDate = new DateTime(2024,12,2),
 					CheckedDate = new DateTime(2024,12,2),
 					PreparedDate = new DateTime(2024,12,2),
@@ -141,6 +143,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				{
 					EventId = 2,
 					FilmId = 3,
+					OrderDate = new DateTime(2024,12,2),
 					ReceivedDate = new DateTime(2024,12,2),
 					CheckedDate = new DateTime(2024,12,2),
 					PreparedDate =new DateTime(2024,12,2),
@@ -151,6 +154,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				{
 					EventId = 2,
 					FilmId = 4,
+					OrderDate = new DateTime(2024,12,2),
 					ReceivedDate = new DateTime(2024,12,2),
 					CheckedDate = new DateTime(2024,12,2),
 					PreparedDate = new DateTime(2024,12,2),
@@ -161,6 +165,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				{
 					EventId = 2,
 					FilmId = 5,
+					OrderDate = new DateTime(2024,12,2),
 					ReceivedDate = new DateTime(2024,12,2),
 					CheckedDate = new DateTime(2024,12,2),
 					PreparedDate =new DateTime(2024,12,2),
@@ -171,6 +176,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				{
 					EventId = 2,
 					FilmId = 6,
+					OrderDate = new DateTime(2024,12,2),
 					ReceivedDate = new DateTime(2024,12,2),
 					CheckedDate = new DateTime(2024,12,2),
 					PreparedDate = new DateTime(2024,12,2),
@@ -181,7 +187,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 
 			foreach (var fs in filmStatuses)
 			{
-				if (!await dbContext.FilmStatuses.AnyAsync(e => e.EventId == fs.EventId))
+				if (!await dbContext.FilmStatuses.AnyAsync(e => e.EventId == fs.EventId && e.FilmId != fs.FilmId))
 				{
 					await dbContext.FilmStatuses.AddAsync(fs);
 				}

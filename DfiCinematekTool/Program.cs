@@ -15,7 +15,6 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
-builder.Services.AddRadzenCookieThemeService();
 
 builder.Services.AddDbContext<CinematekDbContext>(options =>
 {
@@ -61,8 +60,8 @@ builder.Services.AddApplication();
 var app = builder.Build();
 
 // Seed Data
-//await app.Services.UseSeedUserAndRoleDataAsync();
-//await app.Services.UseSeedFilmsAndEventDataAsync();
+await app.Services.UseSeedUserAndRoleDataAsync();
+await app.Services.UseSeedFilmsAndEventDataAsync();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
