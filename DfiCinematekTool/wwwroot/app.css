@@ -58,3 +58,44 @@ h1:focus {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+
+/* OK Button "Ja" */
+.rz-dialog-confirm-buttons .rz-button.rz-primary {
+    background-color: seagreen !important;
+    opacity: 95%;
+    color: #ffffff !important;
+    border: none !important;
+}
+
+    .rz-dialog-confirm-buttons .rz-button.rz-primary:hover {
+        background-color: seagreen !important;
+    }
+
+/* Cancel Button "Nej" */
+.rz-dialog-confirm-buttons .rz-button.rz-base {
+    background-color: indianred !important;
+    color: #ffffff !important;
+    opacity: 95%;
+    border: none !important;
+}
+
+    .rz-dialog-confirm-buttons .rz-button.rz-base:hover {
+        background-color: indianred !important;
+    }
+
+.rz-dialog-titlebar {
+    background-color: #ffffff !important;
+    color: #929292 !important;
+}
+.rz-dialog-title {
+    color: dimgrey !important;
+}
+
+.rz-dialog-confirm-message {
+    color: black !important;
+}
+
+.rz-dialog-content {
+    background-color: #ffffff !important;
+    color: #929292 !important; 
+}
