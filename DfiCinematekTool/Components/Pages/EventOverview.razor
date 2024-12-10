@@ -2,6 +2,7 @@
 @inject IEventService EventService
 @inject IFilmStatusService FilmStatusService
 @inject ToasterService Toaster
+@inject NavigationManager Navigation
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <PageTitle>Event Overview</PageTitle>
@@ -18,7 +19,7 @@ else
 {
 	@foreach(var EventFilmStatus in EventFilmStatuses)
 	{
-		<EventCard EventFilmStatus="EventFilmStatus" OnUpdateFilmStatus="UpdateFilmStatus"  />
+		<EventCard EventFilmStatus="EventFilmStatus" OnUpdateFilmStatus="UpdateFilmStatus" DeleteConfirmation="DeleteEvent"  />
 	}
 }
 
@@ -60,6 +61,36 @@ else
 				$"Filmstatus for {result?.Film?.Title} tilhørende event {result?.Event?.Title} er opdateret.",
 				6000
 			);
+		}
+	}
+
+	private async Task DeleteEvent((bool confirmation, int eventId) result) {
+		if (result.confirmation)
+		{
+			var isDeleted = await EventService.DeleteEventById(result.eventId);
+
+			if (isDeleted)
+			{
+				Toaster.OnSuccess(
+					"Sletning af event gennemført!",
+					$"Alt data tilhørende Event med id {result.eventId} er slettet.",
+					6000
+				);
+
+				EventFilmStatuses = EventFilmStatuses
+					.Where(efs => efs.Item1.Id != result.eventId && !efs.Item2.Any(fs => fs.EventId == result.eventId))
+					.ToList();
+
+				StateHasChanged();
+			}
+			else 
+			{
+				Toaster.OnSuccess(
+					"Event ikke slettet!",
+					$"Fejl opstod under slettelse af Event med id {result.eventId}. Prøv igen.",
+					6000
+				);
+			}
 		}
 	}
 }
