@@ -20,6 +20,9 @@ namespace DfiCinematekTool.Domain.Entities
 
 		public Film? Film { get; set; }
 
+		[Column("OrderDate")]
+		public DateTime OrderDate { get; set; }
+
 		[Column("ReceivedDate")]
 		public DateTime ReceivedDate { get; set; }
 

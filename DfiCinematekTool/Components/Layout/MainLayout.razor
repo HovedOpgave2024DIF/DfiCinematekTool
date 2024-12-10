@@ -1,6 +1,5 @@
 ﻿@inherits LayoutComponentBase
-<RadzenComponents @rendermode="InteractiveServer" />
-@using Microsoft.AspNetCore.Authorization
+<RadzenComponents @rendermode="InteractiveServer" /> 
 @attribute [Authorize(Roles = "Admin")]
 
 <RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
@@ -15,7 +14,7 @@
                         <RadzenRow Gap="12" class="rz-mr-4">
                             <RadzenText class="rz-my-2">Logged in:</RadzenText>
                             <strong class="rz-my-2">@context?.User?.Identity?.Name</strong>
-                            <a href="#">
+                            <a href="/Logout">
                                 <RadzenIcon class="rz-my-2 rz-mr-0" Icon="logout" style="font-weight: 600; color: dimgray;"/>
                             </a>
                         </RadzenRow>

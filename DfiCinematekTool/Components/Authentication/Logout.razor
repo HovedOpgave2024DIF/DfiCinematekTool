@@ -1,0 +1,13 @@
+﻿@page "/Logout"
+@inject NavigationManager Navigation
+@inject SignInManager<ApplicationUser> SignInManager
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (SignInManager.Context.User.Identity?.IsAuthenticated == true)
+        {
+            Navigation.NavigateTo("/Logout/Deauthenticate", forceLoad: true);
+        }
+    }
+}
