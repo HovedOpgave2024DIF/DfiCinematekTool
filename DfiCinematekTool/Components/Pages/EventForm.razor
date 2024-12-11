@@ -3,8 +3,6 @@
 @inject IFilmRepository RepositoryFilm
 @inject IHttpContextAccessor HttpContextAccessor
 
-
-
 @if(Event is not null)
 {
 	<EditForm method="post" FormName="CreateOrEditEventForm" OnValidSubmit="CreateOrEditEvent" Model="@Event" autocomplete="off">
@@ -32,17 +30,17 @@
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event owner</RadzenText>
 			@* <RadzenDropDown @bind-Value=@Event.Owner Data=@UserNames Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" /> *@
 
-			<AuthorizeView Roles="Admin, User" Context="userContext1">
-				<Authorized Context="userAuthorizedContext1">
-					<RadzenTextBox Disabled="true" Value=@(Event.Owner = userAuthorizedContext1.User.Identity.Name) Style="width: 100%; max-width: 400px;" Name="UserName" />
-				</Authorized>
-			</AuthorizeView>
+			<!--<AuthorizeView Roles="Admin, User" Context="userContext1">
+			<Authorized Context="userAuthorizedContext1">-->
+			<RadzenTextBox Disabled="true" Value="admin@dfi.dk" Style="width: 100%; max-width: 400px;" Name="UserName" />
+			<!--</Authorized>
+			</AuthorizeView>-->
 
 		</div>
 
 		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Owner Email</RadzenText>
-			<RadzenDropDown @bind-Value=@Event.OwnerEmail Data=@UserEmail Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
+			<RadzenTextBox Disabled="true" Value="admin@dfi.dk" Style="width: 100%; max-width: 400px;" Name="UserEmail" />
 		</div>
 
 		<div class="mb-3">
