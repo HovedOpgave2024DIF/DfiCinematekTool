@@ -24,12 +24,18 @@
                 <RadzenRow>
                     <RadzenStack Gap="0.5rem" style="width: 100%;">
 
-                        <RadzenFormField Text="Brugernavn eller email" Variant="Variant.Outlined">
+                        <RadzenFormField AllowFloatingLabel="true" Text="Brugernavn eller email" Variant="Variant.Outlined">
                             <RadzenTextBox Name="Email" @bind-Value=User.UserName />
                         </RadzenFormField>
 
-                        <RadzenFormField Text="Password" Variant="Variant.Outlined">
-                            <RadzenPassword @bind-Value=User.Password />
+                        <RadzenFormField AllowFloatingLabel="true" Text="Password" Variant="Variant.Outlined">
+                            <ChildContent>
+                                <RadzenTextBox @bind-Value="@User.Password" Visible="@(!viewPassword)" />
+                                <RadzenPassword @bind-Value=User.Password Visible="@viewPassword"/>
+                            </ChildContent>
+                            <End>
+                                <RadzenButton Icon="@(viewPassword ? "visibility" : "visibility_off")" Shade="Shade.Light" Click="TogglePassword" Variant="Variant.Text" Size="ButtonSize.Small" ButtonStyle="ButtonStyle.Base" />
+                            </End>
                         </RadzenFormField>
 
                         <RadzenButton ButtonType="ButtonType.Submit" Shade="Shade.Light" Text="Login" ButtonStyle="ButtonStyle.Secondary" class="rz-mt-4" />
@@ -43,6 +49,13 @@
 @code {
     [SupplyParameterFromForm]
     private User User { get; set; } = new();
+
+    private bool viewPassword = true;
+
+    private void TogglePassword() {
+
+        viewPassword = !viewPassword;
+    }
 
     // Toaster or show invalid results in the form
     private void Authenticate()

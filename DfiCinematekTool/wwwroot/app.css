@@ -99,3 +99,7 @@ h1:focus {
     background-color: #ffffff !important;
     color: #929292 !important; 
 }
+
+.rz-datalist-data li{
+    padding: 0 0 0 0 !important;
+}
