@@ -14,6 +14,9 @@ namespace DfiCinematekTool.Domain.Entities
 		[Column("DateId")]
 		public int DateId { get; set; }
 
+		[Column("Date")]
+		public DateTime Date { get; set; }
+
 		[Column("Screen")]
 		public string Screen { get; set; } = string.Empty;
 

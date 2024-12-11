@@ -4,6 +4,7 @@ using DfiCinematekTool.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DfiCinematekTool.Infrastructure.Migrations
 {
     [DbContext(typeof(CinematekDbContext))]
-    partial class CinematekDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241206092331_UpdateEventEntity")]
+    partial class UpdateEventEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -155,10 +158,6 @@ namespace DfiCinematekTool.Infrastructure.Migrations
                     b.Property<bool>("HasKey")
                         .HasColumnType("bit")
                         .HasColumnName("HasKey");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("OrderDate");
 
                     b.Property<DateTime>("PreparedDate")
                         .HasColumnType("datetime2")
