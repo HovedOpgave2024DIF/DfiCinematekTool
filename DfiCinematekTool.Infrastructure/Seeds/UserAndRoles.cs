@@ -47,6 +47,30 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 					Email = "user@dfi.dk",
 					NormalizedEmail = "USER@DFI.DK",
 					EmailConfirmed = true,
+				},
+				new ApplicationUser
+				{
+					UserName = "jamora",
+					NormalizedUserName = "JAMORA",
+					Email = "jamora@dfi.dk",
+					NormalizedEmail = "JAMORA@DFI.DK",
+					EmailConfirmed = true,
+				},
+				new ApplicationUser
+				{
+					UserName = "JohnSmith",
+					NormalizedUserName = "JOHNSMITH",
+					Email = "johnsmith@dfi.dk",
+					NormalizedEmail = "JOHNSMITH@DFI.DK",
+					EmailConfirmed = true,
+				},
+				new ApplicationUser
+				{
+					UserName = "JaneSmith",
+					NormalizedUserName = "JANESMITH",
+					Email = "janesmith@dfi.dk",
+					NormalizedEmail = "JANESMITH@DFI.DK",
+					EmailConfirmed = true,
 				}
 			};
 
