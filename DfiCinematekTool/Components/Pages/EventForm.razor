@@ -1,10 +1,13 @@
 ﻿@inject IEventRepository Repository
 @inject IUserRepository RepositoryUser
 @inject IFilmRepository RepositoryFilm
+@inject IHttpContextAccessor HttpContextAccessor
+
+
 
 @if(Event is not null)
 {
-	<EditForm Enhance="true" method="post" FormName="CreateOrEditEventForm" OnValidSubmit="CreateOrEditEvent" Model="Event" autocomplete="off">
+	<EditForm method="post" FormName="CreateOrEditEventForm" OnValidSubmit="CreateOrEditEvent" Model="@Event" autocomplete="off">
 		<h3>
 			@Title
 		</h3>
@@ -20,30 +23,26 @@
 		</div>
 
 		<div class="mb-3">
-		
-				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event abbriviation</RadzenText>
-				<RadzenTextBox @bind-Value=@Event.Abbriviation Style="width: 100%" aria-label="Default TextBox" />
-			
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event abbriviation</RadzenText>
+			<RadzenTextBox @bind-Value=@Event.Abbriviation Style="width: 100%" aria-label="Default TextBox" />
+
 		</div>
 
-
-
-
 		<div class="mb-3">
-			
-			
-				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event owner</RadzenText>
-				<RadzenDropDown @bind-Value=@Event.Owner Data=@UserNames Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
-			
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event owner</RadzenText>
+			@* <RadzenDropDown @bind-Value=@Event.Owner Data=@UserNames Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" /> *@
+
+			<AuthorizeView Roles="Admin, User" Context="userContext1">
+				<Authorized Context="userAuthorizedContext1">
+					<RadzenTextBox Disabled="true" Value=@(Event.Owner = userAuthorizedContext1.User.Identity.Name) Style="width: 100%; max-width: 400px;" Name="UserName" />
+				</Authorized>
+			</AuthorizeView>
+
 		</div>
 
-
 		<div class="mb-3">
-			
-			
-				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Owner Email</RadzenText>
-				<RadzenDropDown @bind-Value=@Event.OwnerEmail Data=@UserEmail Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
-			
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Owner Email</RadzenText>
+			<RadzenDropDown @bind-Value=@Event.OwnerEmail Data=@UserEmail Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
 		</div>
 
 		<div class="mb-3">
@@ -51,48 +50,33 @@
 			<RadzenNumeric @bind-Value=@Event.DurationInMinutes TValue="int" ShowUpDown="false" Placeholder="In minutes" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
 		</div>
 
-
-
 		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Date (DDMMYY)</RadzenText>
 			<RadzenNumeric @bind-Value=@Event.DateId TValue="int" ShowUpDown="false" Placeholder="DDMMYY" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
 
 		</div>
 
-
 		<div class="mb-3">
-			
-			
-				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event type</RadzenText>
-				<RadzenDropDown @bind-Value=@Event.EventType Data=@EventTypeEnums Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
-			
-		</div>
-
-
-		<div class="mb-3">
-			
-			
-				<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Screen</RadzenText>
-				<RadzenDropDown @bind-Value=@Event.Screen Data=@ScreenEnums Style="width: 100%; max-width: 400px;" Name="ScreenDropdown" />
-			
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event type</RadzenText>
+			<RadzenDropDown @bind-Value=@Event.EventType Data=@EventTypeEnums Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
 
 		</div>
 
+		<div class="mb-3">
+			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Screen</RadzenText>
+			<RadzenDropDown @bind-Value=@Event.Screen Data=@ScreenEnums Style="width: 100%; max-width: 400px;" Name="ScreenDropdown" />
 
-
+		</div>
 
 		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Is Event?</RadzenText>
 			<RadzenCheckBox TValue="bool" @bind-Value=Event.IsEvent Change=@(args => Event.IsEvent = args) Name="IsEventCheck"></RadzenCheckBox>
 		</div>
 
-
 		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Is Rooftop?</RadzenText>
 			<RadzenCheckBox TValue="bool" @bind-Value=Event.IsRooftop Change=@(args => Event.IsRooftop = args) Name="IsRooftopCheck"></RadzenCheckBox>
 		</div>
-
-
 
 		<div class=" mb-3">
 			<button class="btn-primary shadow-none">
@@ -108,62 +92,50 @@
 }
 
 @code {
+	[SupplyParameterFromForm]
+	public Event Event { get; set; } = new();
+
 	[Parameter]
 	public bool IsEditMode { get; set; } = false;
 
 	[Parameter]
 	public int EventId { get; set; }
 
-
 	[Parameter]
 	public EventCallback<Event> OnValidEventSubmit { get; set; }
 
 	[Parameter]
-	public List<String> UserNames { get; set; }
+	public List<String> UserNames { get; set; } = new();
 
 	[Parameter]
-	public List<String> UserEmail { get; set; }
+	public List<String> UserEmail { get; set; } = new();
 
-	
 	public List<string> ScreenEnums = Enum.GetValues(typeof(Screen)).Cast<Screen>().Select(s => s.ToString()).ToList();
 
 	public List<string> EventTypeEnums = Enum.GetValues(typeof(EventType)).Cast<EventType>().Select(e => e.ToString()).ToList();
 
 
 
-
-	[SupplyParameterFromForm]
-	public Event? Event { get; set; }
-
 	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Event";
 
 	protected override async Task OnInitializedAsync()
 	{
-
 		var users = await RepositoryUser.GetAllUsersAsync();
 		UserNames = users.Select(user => user.UserName).ToList();
 		UserEmail = users.Select(user => user.Email).ToList();
 
-		
-
 		if (IsEditMode)
 		{
-			Event ??= await Repository.GetEventByIdAsync(EventId);
-		}
-		else
-		{
-			Event ??= new();
+			var existingEvent = await Repository.GetEventByIdAsync(EventId);
+			if (existingEvent != null)
+			{
+				Event = existingEvent;
+			}
 		}
 	}
 
 	private async Task CreateOrEditEvent()
 	{
-	
-
-
 		await OnValidEventSubmit.InvokeAsync(Event);
 	}
-
-
-
 }
