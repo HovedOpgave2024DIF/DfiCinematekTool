@@ -1,5 +1,4 @@
-﻿@using RadzenBlazorDemos.Models.Northwind
-@inject IEventRepository Repository
+﻿@inject IEventRepository Repository
 @inject IUserRepository RepositoryUser
 @inject IFilmRepository RepositoryFilm
 @inject IHttpContextAccessor HttpContextAccessor
@@ -80,24 +79,58 @@
 
 		<div class="mb-3">
 			<RadzenLabel Text="Select Films" Component="DropDownDataGridMultiple" />
-			<RadzenDropDownDataGrid @ref="grid" Chips="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowClear="true" @bind-Value=@Event.Films
-									Multiple="true" Placeholder="Select..." Data=@FilmList TextProperty="@nameof(Film)" ValueProperty="@nameof(Film.Id)" Name="DropDownDataGridMultiple">
-				<Columns>
-					<RadzenDropDownDataGridColumn Width="60px" Sortable="false">
-						<HeaderTemplate>
-							<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select all" }})" Disabled="@(!grid.AllowSelectAll)" TriState="false" TValue="bool" Value="@(FilmList.Any(f => values != null && values.Contains(f.Id)))"
-											Change="@(args => values = args ? grid.View.Cast<Film>().Select(f => f.Id) : values = Enumerable.Empty<string>())" />
-						</HeaderTemplate>
-						<Template Context="data">
-							<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select item" }})" TriState="false" Value="@(values != null && values.Contains(((Film) data).Id))"
-											TValue="bool" Change=@(args => grid.SelectItem(data)) @onclick:stopPropagation />
-						</Template>
-					</RadzenDropDownDataGridColumn>
-					<RadzenDropDownDataGridColumn Property="@nameof(Film.Title)" Title="FilmTitle" Width="80px" />
-					<RadzenDropDownDataGridColumn Property="@nameof(Film.OriginalTitle)" Title="FilmOriginalTitle" Width="200px" />
-					<RadzenDropDownDataGridColumn Property="@nameof(Film.DurationInMinutes)" Title="FilmDuration" Width="100px" />
-				</Columns>
-			</RadzenDropDownDataGrid>
+			<!--<RadzenDropDownDataGrid @ref=@grid Chips="true" AllowFiltering="true"
+			FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowClear="true"
+			@bind-Value="filmIds" Multiple="true" Placeholder="Select..."
+			Data="@FilmList" TextProperty="@nameof(Film.Title)" ValueProperty="@nameof(Film.Id)">
+			<Columns>
+			<RadzenDropDownDataGridColumn Width="60px" Sortable="false">
+			<HeaderTemplate>
+			<RadzenCheckBox TValue="bool" TriState="false"
+			Value="@(FilmList.Any(f => filmIds != null && filmIds.Contains(f.Id)))"
+			Change="@(args => { if (args) { filmIds = grid.View.Cast<Film>().Select(f => f.Id).ToList(); } else { filmIds.Clear(); } })" />
+			</HeaderTemplate>
+			<Template Context="data">
+			<RadzenCheckBox TValue="bool"
+			Value="@(Event.Films.Contains((Film)data))" // Check if this film is in Event.Films
+			Change="@(args =>
+			{
+			var film = (Film)data;
+			if (args)
+			Event.Films.Add(film); // Add Film object to Event.Films
+			else
+			Event.Films.Remove(film); // Remove Film object from Event.Films
+			})" />
+			</Template>
+			</RadzenDropDownDataGridColumn>
+			<RadzenDropDownDataGridColumn Property="@nameof(Film.Title)" Title="FilmTitle" />
+			<RadzenDropDownDataGridColumn Property="@nameof(Film.OriginalTitle)" Title="FilmOriginalTitle" />
+			<RadzenDropDownDataGridColumn Property="@nameof(Film.DurationInMinutes)" Title="FilmDuration" />
+			</Columns>
+			</RadzenDropDownDataGrid> -->
+
+			<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0.5rem" class="rz-p-12">
+				<RadzenLabel Text="Select Values" Component="DropDownDataGridMultiple" />
+				<RadzenDropDownDataGrid @ref="grid" Chips="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowClear="true" @bind-Value=@filmIds
+										Multiple="true" Placeholder="Select..." Data=@FilmList TextProperty="@nameof(Film.Title)" ValueProperty="@nameof(Film.Id)" Name="DropDownDataGridMultiple">
+					<Columns>
+						<RadzenDropDownDataGridColumn Width="60px" Sortable="false">
+							<HeaderTemplate>
+								<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select all" }})" Disabled="@(!grid.AllowSelectAll)" TriState="false" TValue="bool"
+												Value="@(FilmList.Any(f => filmIds != null && filmIds.Contains(f.Id)))"
+												Change="@(args => filmIds = args ? grid.View.Cast<Film>().Select(f => f.Id) : filmIds = Enumerable.Empty<int>())" />
+							</HeaderTemplate>
+							<Template Context="data">
+								<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select item" }})" TriState="false"
+												Value="@(filmIds != null && filmIds.Contains(((Film) data).Id))"
+												TValue="bool" Change=@(args => grid.SelectItem(data)) @onclick:stopPropagation />
+							</Template>
+						</RadzenDropDownDataGridColumn>
+						<RadzenDropDownDataGridColumn Property="@nameof(Film.Title)" Title="FilmTitle" Width="100px" />
+						<RadzenDropDownDataGridColumn Property="@nameof(Film.DurationInMinutes)" Title="FilmDuration" Width="100px" />
+					</Columns>
+				</RadzenDropDownDataGrid>
+			</RadzenStack>
 
 		</div>
 
@@ -118,6 +151,8 @@
 	[SupplyParameterFromForm]
 	public Event Event { get; set; } = new();
 
+	RadzenDropDownDataGrid<IEnumerable<int>> grid;
+
 	[Parameter]
 	public bool IsEditMode { get; set; } = false;
 
@@ -134,26 +169,24 @@
 	public List<String> UserEmail { get; set; } = new();
 
 	[Parameter]
-	public List<Film> FilmList { get; set; } = new();
+	public ICollection<Film> FilmList { get; set; } = new List<Film>();
+
+	public IEnumerable<int> filmIds { get; set; } = new List<int>();
 
 	public List<string> ScreenEnums = Enum.GetValues(typeof(Screen)).Cast<Screen>().Select(s => s.ToString()).ToList();
 
 	public List<string> EventTypeEnums = Enum.GetValues(typeof(EventType)).Cast<EventType>().Select(e => e.ToString()).ToList();
 
-
-
 	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Event";
 
 	protected override async Task OnInitializedAsync()
 	{
-
-		RadzenDropDownDataGrid<IEnumerable<string>> grid;
 		var users = await RepositoryUser.GetAllUsersAsync();
 		UserNames = users.Select(user => user.UserName).ToList();
 		UserEmail = users.Select(user => user.Email).ToList();
 
-		FilmList = await RepositoryFilm.GetAllFilmsAsync();
-		
+		FilmList = await RepositoryFilm.GetAllFilmsAsync() ?? new List<Film>();
+		Event.Films ??= new List<Film>();
 
 		if (IsEditMode)
 		{
