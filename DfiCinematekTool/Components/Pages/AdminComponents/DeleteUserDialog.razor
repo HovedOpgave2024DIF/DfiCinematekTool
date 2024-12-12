@@ -1,0 +1,35 @@
+﻿@inject DialogService DialogService
+
+<RadzenButton Click="HandleDialog" Text="Fjern" Icon="delete" Shade="Shade.Light" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.ExtraSmall" />
+
+@code {
+    [Parameter]
+    public string Username { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<(bool confirmation, string username)> DialogConformation { get; set; }
+
+    private async Task HandleDialog()
+    {
+
+        var userChoice = await DialogService.Confirm(
+                "Følgende handling vil slette alt data, ønsker du at forsætte?",
+                $"Ønsker du at slette bruger {Username}?",
+                new ConfirmOptions()
+                {
+                    OkButtonText = "Ja",
+                    CancelButtonText = "Nej"
+                }
+        );
+
+        if (userChoice.HasValue && userChoice.Value)
+        {
+            await DialogConformation.InvokeAsync((confirmation: true, username: Username));
+        }
+        else
+        {
+            await DialogConformation.InvokeAsync((confirmation: false, username: Username));
+        }
+    }
+}
+

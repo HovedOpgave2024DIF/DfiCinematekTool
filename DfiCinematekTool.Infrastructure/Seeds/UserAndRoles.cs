@@ -16,7 +16,10 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 			List<IdentityRole> roles = new()
 			{
 				new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
-				new IdentityRole { Name = "User", NormalizedName = "USER" }
+				new IdentityRole { Name = "User", NormalizedName = "USER" },
+				new IdentityRole { Name = "Administrator", NormalizedName = "ADMINISTRATOR" },
+				new IdentityRole { Name = "Operatør", NormalizedName = "OPERATØR" },
+				new IdentityRole { Name = "Programredaktør", NormalizedName = "PROGRAMREDAKTØR" },
 			};
 
 			foreach (var role in roles)

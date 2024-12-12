@@ -1,0 +1,52 @@
+﻿@page "/UserOverview"
+@inject IUserService UserService
+@inject ToasterService Toaster
+@inject NavigationManager Navigation
+@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
+@rendermode InteractiveServer
+
+<PageTitle>Brugeroversigt</PageTitle>
+
+<RadzenRow class="rz-mb-2 rz-ml-2">
+	<RadzenButton Click=@(() => { Navigation.NavigateTo("/UserOverview/AddUser", true);}) Text="Tilføj bruger" Icon="add" Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" />
+</RadzenRow>
+
+<UserList Users="@UserList" UserToDelete="DeleteUser" />
+
+@code {
+	public List<User> UserList { get; set; } = new();
+
+	protected override async Task OnInitializedAsync() {
+
+		UserList = await UserService.GetAllUsersAsync();
+	}
+
+	private async Task DeleteUser((bool confirmation, string username) result) 
+	{
+		if (result.confirmation) {
+
+			var isDeleted = await UserService.DeleteUserByUserNameAsync(result.username);
+
+			if (isDeleted)
+			{
+				UserList = UserList.Where(user => user.UserName != result.username).ToList();
+
+				StateHasChanged();
+
+				Toaster.OnSuccess(
+					"Bruger fjernet!",
+					$"Bruger {result.username} er fjernet fra databasen.",
+					6000
+				);
+			}
+			else
+			{
+				Toaster.OnError(
+					"Fejl. Bruger ikke fjernet!",
+					$"Bruger {result.username} kunne ikke fjernes.",
+					6000
+				);
+			}
+		}
+	}
+}

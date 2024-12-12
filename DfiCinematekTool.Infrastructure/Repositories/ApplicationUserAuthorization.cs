@@ -45,7 +45,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			return true;
 		}
 
-		public async Task<bool> HandleUserRolesAsync(string userName, UserRole userRole)
+		public async Task<bool> HandleUserRolesAsync(string userName, UserRoleEnum userRole)
 		{
 			if (!string.IsNullOrWhiteSpace(userName))
 				throw new ArgumentNullException(nameof(userName), "User name cannot be empty.");

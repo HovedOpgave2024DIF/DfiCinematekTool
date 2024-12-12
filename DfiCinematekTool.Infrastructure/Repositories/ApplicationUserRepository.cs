@@ -2,7 +2,6 @@
 using DfiCinematekTool.Domain.Interfaces;
 using DfiCinematekTool.Infrastructure.Context;
 using DfiCinematekTool.Infrastructure.Identity;
-using DfiCinematekTool.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
@@ -34,6 +33,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 					users.Add(new User
 					{
+						Id = applicationUser.Id,
 						UserName = applicationUser.UserName,
 						Email = applicationUser.Email,
 						Roles = roles.ToList()
@@ -43,16 +43,16 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 		}
 
 
-		public async Task<User?> GetUserByUserNameAsync(string userName)
+		public async Task<User?> GetUserByUserNameAsync(string username)
 		{
-			if (string.IsNullOrWhiteSpace(userName))
-				throw new ArgumentNullException(nameof(userName), "User name cannot be empty.");
+			if (string.IsNullOrWhiteSpace(username))
+				throw new ArgumentNullException(nameof(username), "User name cannot be empty.");
 
-			if (int.TryParse(userName, out _))
-				throw new ArgumentException($"User name '{userName}' cannot be a number.", nameof(userName));
+			if (int.TryParse(username, out _))
+				throw new ArgumentException($"User name '{username}' cannot be a number.", nameof(username));
 
 			//Find the user by username
-			var applicationUser = await _userManager.FindByEmailAsync(userName);
+			var applicationUser = await _userManager.FindByNameAsync(username);
 			var user = new User();
 
 			if (applicationUser is null) return user;
@@ -60,6 +60,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			// Add roles
 			if (applicationUser.UserName is null || applicationUser.Email is null) return user;
 			var roles = await _userManager.GetRolesAsync(applicationUser);
+			user.Id = applicationUser.Id;
 			user.UserName = applicationUser.UserName;
 			user.Email = applicationUser.Email;
 			user.Roles = roles.ToList();
@@ -106,13 +107,23 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			if (user is null)
 				throw new ArgumentNullException(nameof(user), "User cannot be empty.");
 
-			var applicationUser = await _userManager.FindByNameAsync(user.UserName);
+			var applicationUser = await _userManager.FindByIdAsync(user.Id);
 
 			if (applicationUser is null)
 				throw new Exception($"User '{user.UserName}' not found.");
 
+			// Update username
+			if (!string.IsNullOrEmpty(user.UserName) && !user.UserName.Equals(applicationUser.UserName))
+			{
+				var existingUserByUsername = await _userManager.FindByNameAsync(user.UserName);
+				if (existingUserByUsername != null && existingUserByUsername.Id != applicationUser.Id)
+					throw new Exception($"Username '{user.UserName}' is already taken by another user.");
+
+				applicationUser.UserName = user.UserName;
+			}
+
 			// Update email
-			if (!string.IsNullOrEmpty(applicationUser.Email) && applicationUser.Email.Equals(user.Email))
+			if (!string.IsNullOrEmpty(user.Email) && !user.Email.Equals(applicationUser.Email))
 			{
 				var existingUserByEmail = await _userManager.FindByEmailAsync(user.Email);
 				if (existingUserByEmail != null && existingUserByEmail.Id != applicationUser.Id)

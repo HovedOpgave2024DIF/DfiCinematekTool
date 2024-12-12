@@ -1,21 +1,44 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <base href="/" />
-        <link rel="stylesheet" href="@Assets["app.css"]" />
-        <RadzenTheme Theme="standard" @rendermode="InteractiveServer" />
-        <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
-        <link rel="stylesheet" href="@Assets["DfiCinematekTool.styles.css"]" />
-        <ImportMap />
-        <link rel="icon" type="image/png" href="favicon.png" />
-        <HeadOutlet @rendermode="@RenderMode.InteractiveServer"/>
-    </head>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <base href="/" />
+    <link rel="stylesheet" href="@Assets["app.css"]" />
+    <RadzenTheme Theme="standard-dark" @rendermode="InteractiveServer" />
+    <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
+    <link rel="stylesheet" href="@Assets["DfiCinematekTool.styles.css"]" />
+    <ImportMap />
+    <link rel="icon" type="image/png" href="favicon.png" />
+    <HeadOutlet @rendermode="@RenderMode.InteractiveServer"/>
+</head>
 
-    <body>
-        <Routes @rendermode="@RenderMode.InteractiveServer" />
-        <script src="_framework/blazor.web.js"></script>
-        <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
-    </body>
+<body>
+    <Routes @rendermode="@RenderMode.InteractiveServer" />
+    <script src="_framework/blazor.web.js"></script>
+    <script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>
+</body>
 </html>
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [Inject]
+    private ThemeService ThemeService { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        if (HttpContext != null)
+        {
+            var theme = HttpContext.Request.Cookies["MyApplicationTheme"];
+
+            if (!string.IsNullOrEmpty(theme))
+            {
+                ThemeService.SetTheme(theme, false);
+            }
+        }
+    }
+}
