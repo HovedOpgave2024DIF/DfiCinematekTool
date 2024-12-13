@@ -38,15 +38,15 @@ Data="@Users" TItem="User" PageSize="6" PagerHorizontalAlign="HorizontalAlign.Le
 
                         <RadzenColumn Size="12" SizeSM="3" >
                             <RadzenText class="rz-mb-1 header-title">Aktivstatus</RadzenText>
-                            <RadzenBadge BadgeStyle="BadgeStyle.Success" Shade="Shade.Lighter" class="lockout-badge" Text=@("Aktiv") />
+                            <RadzenBadge BadgeStyle=@(user.Lockout == null ? BadgeStyle.Success : BadgeStyle.Danger) Shade="Shade.Lighter" class="lockout-badge" Text=@(user.Lockout == null ? "Aktiv" : "Ikke aktiv") />
                         </RadzenColumn>
 
                         <RadzenColumn Size="12" SizeSM="4" class="">
                             <RadzenText class="rz-mb-1 header-title">Handlinger</RadzenText>
                             <RadzenRow Gap="1.5rem" Style="">
                                 <RadzenButton Click=@(() => { Navigation.NavigateTo($"/UserOverview/Edit/{user.UserName}"); }) Text="Opdater" Icon="update" Shade="Shade.Light" ButtonStyle="ButtonStyle.Base" Size="ButtonSize.ExtraSmall" />
-                                <RadzenButton Click=@(() => {}) Text="Lås" Icon="lock" Shade="Shade.Light" ButtonStyle="ButtonStyle.Warning" Size="ButtonSize.ExtraSmall" />
-                               <DeleteUserDialog Username="@user.UserName" DialogConformation="HandleDelete" />
+                                <UserLockout Username="@user.UserName" LockoutStatus="@(user.Lockout == null ? false : true)" OnLockout="HandleLockout" />
+                                <DeleteUserDialog Username="@user.UserName" DialogConformation="HandleDelete" />
                             </RadzenRow>
                         </RadzenColumn> 
                     </RadzenRow>
@@ -87,10 +87,18 @@ Data="@Users" TItem="User" PageSize="6" PagerHorizontalAlign="HorizontalAlign.Le
     [Parameter]
     public EventCallback<(bool confirmation, string username)> UserToDelete { get; set; }
 
+    [Parameter]
+    public EventCallback<(bool isLockedout, string username)> OnLockout { get; set; }
+
     private bool allowVirtualization;
 
     private async Task HandleDelete((bool confirmation, string username) result) 
     {
         await UserToDelete.InvokeAsync((confirmation: result.confirmation, username: result.username));
+    }
+
+    private async Task HandleLockout((bool isLocked, string username) result)
+    {
+        await OnLockout.InvokeAsync((isLockedout: result.isLocked, username: result.username));
     }
 }

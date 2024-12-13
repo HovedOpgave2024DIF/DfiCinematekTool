@@ -82,5 +82,18 @@ namespace DfiCinematekTool.Application.Services
 				throw;
 			}
 		}
+
+		public async Task<bool> HandleUserLockoutAsync(string userName, bool isLocked)
+		{
+			try
+			{
+				return await _userRepository.HandleUserLockoutAsync(userName, isLocked);
+			}
+			catch(Exception ex)
+			{
+				Console.WriteLine(ex.Message);
+				throw;
+			}
+		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using DfiCinematekTool.Domain.Interfaces;
 using DfiCinematekTool.Infrastructure.Context;
 using DfiCinematekTool.Infrastructure.Identity;
+using DfiCinematekTool.Infrastructure.Interfaces;
 using DfiCinematekTool.Infrastructure.Repositories;
 using DfiCinematekTool.Infrastructure.Seeds;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,8 @@ namespace DfiCinematekTool.Infrastructure
 			services.AddScoped<IFilmRepository, FilmRepository>();
 			services.AddScoped<IFilmStatusRepository, FilmStatusRepository>();
 			services.AddScoped<IUserRepository, ApplicationUserRepository>();
+			services.AddScoped<IAuthorization, ApplicationUserAuthorization>();
+			services.AddScoped<ApplicationUserAuthorization>();
 			return services;
 		}
 

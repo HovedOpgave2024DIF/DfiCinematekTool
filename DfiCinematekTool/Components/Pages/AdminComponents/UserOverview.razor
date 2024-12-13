@@ -2,8 +2,7 @@
 @inject IUserService UserService
 @inject ToasterService Toaster
 @inject NavigationManager Navigation
-@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
-@rendermode InteractiveServer
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <PageTitle>Brugeroversigt</PageTitle>
 
@@ -11,7 +10,7 @@
 	<RadzenButton Click=@(() => { Navigation.NavigateTo("/UserOverview/AddUser", true);}) Text="Tilføj bruger" Icon="add" Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" />
 </RadzenRow>
 
-<UserList Users="@UserList" UserToDelete="DeleteUser" />
+<UserList Users="@UserList" UserToDelete="DeleteUser" OnLockout="LockoutUser" />
 
 @code {
 	public List<User> UserList { get; set; } = new();
@@ -45,6 +44,35 @@
 					"Fejl. Bruger ikke fjernet!",
 					$"Bruger {result.username} kunne ikke fjernes.",
 					6000
+				);
+			}
+		}
+	}
+
+	private async Task LockoutUser((bool isLocked, string username) result)
+	{
+		var userIsLocked = await UserService.HandleUserLockoutAsync(result.username, result.isLocked);
+
+		if(userIsLocked) 
+		{
+			UserList = await UserService.GetAllUsersAsync(); ;
+
+			StateHasChanged();
+
+			if (result.isLocked)
+			{
+				Toaster.OnWarning(
+				"Bruger adgang låst",
+				$"Bruger {result.username} låst for aktivitet.",
+				6000
+				);
+			}
+			else
+			{
+				Toaster.OnSuccess(
+				"Bruger adgang åbnet",
+				$"Bruger {result.username} låst op for aktivitet.",
+				6000
 				);
 			}
 		}
