@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
-<RadzenComponents @rendermode="InteractiveServer" /> 
+@inject CookieThemeService CookieThemeService
 @attribute [Authorize(Roles = "Admin")]
+<RadzenComponents @rendermode="InteractiveServer" /> 
 
 <RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
 	<RadzenHeader>
@@ -34,6 +35,7 @@
     <AuthorizeView>
         <Authorized>
             <RadzenSidebar class="rz-color-grey" Expanded="@sidebarExpanded" Style="z-index: 2; width: 18vw; display: flex; flex-direction: column; justify-content: space-between;">
+                
                 <RadzenPanelMenu>
                     <RadzenPanelMenuItem Text="Dansk Film Institut" Path="/" Style="font-size: 1.2rem; height: 43px;" class="align-content-md-center rz-border-radius-2 m-2" />
 
@@ -46,12 +48,11 @@
                         </Authorized>
                     </AuthorizeView>
 
-
                     <AuthorizeView Roles="Admin" Context="adminContext">
                         <Authorized Context="adminAuthorizedContext">
                             <RadzenPanelMenuItem Text="Admin" Icon="admin_panel_settings" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
                                 <RadzenPanelMenuItem Text="Brugeroversigt" Icon="id_card" Path="/UserOverview" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
-                                <RadzenPanelMenuItem Text="Tilføj bruger" Icon="add" Path="/UserOverview/CreateUser" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
+                                <RadzenPanelMenuItem Text="Tilføj bruger" Icon="add" Path="/UserOverview/AddUser" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
                             </RadzenPanelMenuItem>
                         </Authorized>
                     </AuthorizeView>

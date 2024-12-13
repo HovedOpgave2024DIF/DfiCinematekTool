@@ -1,0 +1,34 @@
+﻿@page "/UserOverview/Edit/{username}"
+@inject IUserService UserService
+@inject ToasterService Toaster
+@inject NavigationManager Navigation
+
+<PageTitle>Opdater bruger</PageTitle>
+
+<div class="row justify-content-center">
+	<div class="col-6">
+		<UserForm IsEditMode="true" UserFromForm="HandleEditUser" Username="@Username"/>
+	</div>
+</div>
+
+
+
+@code {
+	[Parameter]
+	public string Username { get; set; } = string.Empty;
+
+	private async Task HandleEditUser(User user)
+	{
+		var result = await UserService.UpdateUserAsync(user);
+
+		if (result is not null)
+		{
+			Toaster.OnSuccess(
+				$"Burgerdata opdateret",
+				$"Bruger {result?.UserName} er opdateret",
+				6000
+			);
+			Navigation.NavigateTo("/UserOverview");
+		}
+	}
+}

@@ -15,6 +15,12 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
+builder.Services.AddRadzenCookieThemeService(options =>
+{
+	options.Name = "DfiThemeCookie";
+	options.Duration = TimeSpan.FromDays(365);
+
+});
 
 builder.Services.AddDbContext<CinematekDbContext>(options =>
 {

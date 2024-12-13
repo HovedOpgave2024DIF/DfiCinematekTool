@@ -1,0 +1,84 @@
+﻿@inject IUserService UserService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<EditForm method="post" Model="@User" OnValidSubmit="AddOrEditUser" FormName="UserForm">
+	<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Style="width:100%;">
+		<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" class="rz-p-sm-11 rz-border-radius-2 rz-shadow-2" Style="width:100%; max-width: 400px;">
+
+			<RadzenText class="rz-m-2" TextStyle="TextStyle.DisplayH6" Style="color:dimgray;">@title</RadzenText>
+
+			<RadzenFormField Text="Brugernavn" Variant="Variant.Outlined" Style="width: 100%;">
+				<RadzenTextBox @bind-Value="User.UserName" />
+			</RadzenFormField>
+
+			<RadzenFormField Text="Password" Variant="Variant.Outlined" Style="width: 100%;">
+				<RadzenTextBox @bind-Value="User.Password" />
+			</RadzenFormField>
+
+			<RadzenFormField Text="Email" Variant="Variant.Outlined" Style="width: 100%;">
+				<RadzenTextBox @bind-Value="User.Email" />
+			</RadzenFormField>
+
+			<RadzenDropDown class="rz-mt-2" @bind-Value="User.Roles"
+				Data="@userRoleOptions"
+				TextProperty="@nameof(UserRole.Role)"
+				ValueProperty="@nameof(UserRole.Value)"
+				Multiple="true"
+				AllowClear="true"
+				Chips="true"
+				SelectAllText="Marker alle roller"
+				Placeholder="Angiv autorisering"
+				Style="width: 100%; max-width: 400px;" 
+			/>
+
+			<div style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 400px; gap: 1.5rem;">
+				<RadzenButton ButtonType="ButtonType.Submit" Shade="Shade.Light" Text="Ok" ButtonStyle="ButtonStyle.Success" class="rz-mt-4" Style="width: 100%;" />
+				<RadzenButton Click="@(() => Navigation.NavigateTo("/UserOverview"))" ButtonType="ButtonType.Reset" Shade="Shade.Light" Text="Tilbage" ButtonStyle="ButtonStyle.Base" class="rz-mt-4" Style="width: 100%;" />
+			</div>
+		</RadzenStack>
+	</RadzenStack>
+</EditForm>
+
+
+@code {
+	[SupplyParameterFromForm]
+	public User User { get; set; } = new();
+
+	[Parameter]
+	public EventCallback<User> UserFromForm { get; set; }
+
+	[Parameter]
+	public bool IsEditMode { get; set; }
+
+	[Parameter]
+	public string Username { get; set; } = string.Empty;
+
+	private List<UserRole> userRoleOptions = Enum.GetValues(typeof(UserRoleEnum))
+		.Cast<UserRoleEnum>()
+		.Select(role => role.ConvertUserRoleEnumToUserRole())
+		.ToList();
+
+	private string title => IsEditMode ? "Opdater bruger" : "Tilføj ny bruger";
+
+	protected override async Task OnInitializedAsync()
+	{
+		if (IsEditMode)
+		{
+			Console.WriteLine(Username);
+			User = await UserService.GetUserByUserNameAsync(Username) ?? new();
+
+			Console.WriteLine(User?.UserName);
+		}
+		else
+		{
+			// Insert Toaster
+		}
+	}
+
+	private async Task AddOrEditUser() 
+	{
+		await UserFromForm.InvokeAsync(User);
+	}
+}
+

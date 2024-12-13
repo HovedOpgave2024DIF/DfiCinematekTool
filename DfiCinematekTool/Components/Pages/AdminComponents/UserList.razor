@@ -1,32 +1,33 @@
-﻿
+﻿@inject NavigationManager Navigation
+
 <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-p-2">
     <RadzenCheckBox @bind-Value="@allowVirtualization" Name="allowVirtualization" />
     <RadzenLabel Text="Tillad virtualisering" Component="allowVirtualization" />
 </RadzenStack>
-    
-<RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height: 250px; overflow:auto;" : "")"
-                WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
-Data="@Users" TItem="User" PageSize="3" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+
+<RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height: 450px; overflow:auto;" : "")"
+WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
+Data="@Users" TItem="User" PageSize="6" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
     <Template Context="user">
-        
+
         <RadzenCard Variant="Variant.Flat" class="rz-p-0" Style="width: 100%; overflow: hidden;">
-            
+
             <RadzenRow Gap="0">
-               
+
                 <RadzenColumn Size="12" SizeSM="2" class="rz-p-1 rz-pl-4 user-title">
-                    <RadzenText class="rz-mb-1 header-title">Brygernavn</RadzenText>
+                    <RadzenText class="rz-mb-1 header-title">Brugernavn</RadzenText>
                     <RadzenText TextStyle="TextStyle.Body2" class="rz-color-on-secondary-lighter">@(user.UserName)</RadzenText>
                 </RadzenColumn>
-                
+
                 <RadzenColumn Size="12" SizeMD="10" class="rz-p-1">
-                    
+
                     <RadzenRow Gap="0">
 
                         <RadzenColumn Size="12" SizeSM="3">
                             <RadzenText class="rz-mb-1 rz-ml-2 header-title">Email</RadzenText>
                             <RadzenText class="rz-ml-2" TextStyle="TextStyle.Body2">@(user.Email)</RadzenText>
                         </RadzenColumn>
-                        
+
                         <RadzenColumn Size="12" SizeSM="2">
                             <RadzenText class="rz-mb-1 header-title">Rolle(r)</RadzenText>
                             @foreach (var role in user.Roles ?? []) 
@@ -34,7 +35,7 @@ Data="@Users" TItem="User" PageSize="3" PagerHorizontalAlign="HorizontalAlign.Le
                                 <RadzenText TextStyle="TextStyle.Body2">@(role)</RadzenText>
                             }
                         </RadzenColumn>
-                        
+
                         <RadzenColumn Size="12" SizeSM="3" >
                             <RadzenText class="rz-mb-1 header-title">Aktivstatus</RadzenText>
                             <RadzenBadge BadgeStyle="BadgeStyle.Success" Shade="Shade.Lighter" class="lockout-badge" Text=@("Aktiv") />
@@ -43,9 +44,9 @@ Data="@Users" TItem="User" PageSize="3" PagerHorizontalAlign="HorizontalAlign.Le
                         <RadzenColumn Size="12" SizeSM="4" class="">
                             <RadzenText class="rz-mb-1 header-title">Handlinger</RadzenText>
                             <RadzenRow Gap="1.5rem" Style="">
-                                <RadzenButton Click=@(() => {}) Text="Opdater" Icon="update" Shade="Shade.Light" ButtonStyle="ButtonStyle.Base" Size="ButtonSize.ExtraSmall" />
+                                <RadzenButton Click=@(() => { Navigation.NavigateTo($"/UserOverview/Edit/{user.UserName}"); }) Text="Opdater" Icon="update" Shade="Shade.Light" ButtonStyle="ButtonStyle.Base" Size="ButtonSize.ExtraSmall" />
                                 <RadzenButton Click=@(() => {}) Text="Lås" Icon="lock" Shade="Shade.Light" ButtonStyle="ButtonStyle.Warning" Size="ButtonSize.ExtraSmall" />
-                                <RadzenButton Click=@(() => {}) Text="Fjern" Icon="delete" Shade="Shade.Light" ButtonStyle="ButtonStyle.Danger" Size="ButtonSize.ExtraSmall" />
+                               <DeleteUserDialog Username="@user.UserName" DialogConformation="HandleDelete" />
                             </RadzenRow>
                         </RadzenColumn> 
                     </RadzenRow>
@@ -53,35 +54,43 @@ Data="@Users" TItem="User" PageSize="3" PagerHorizontalAlign="HorizontalAlign.Le
                 </RadzenColumn>
 
             </RadzenRow>
-        
+
         </RadzenCard>
-    
+
     </Template>
 </RadzenDataList>
 
 <style>
     .user-title {
-        min-height: 40px;
-        background-color: var(--rz-secondary-lighter);
+    min-height: 40px;
+    background-color: var(--rz-secondary-lighter);
     }
 
     .lockout-badge {
-        font-size: 0.65rem;
-        font-weight: 600;
-        line-height: 20px;
-        padding: 1px 6px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 1px 6px;
     }
 
     .header-title {
-        font-size: 0.9rem;
-        font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 600;
     }
 </style>
 
 
 @code {
-    private bool allowVirtualization;
-
     [Parameter]
     public List<User> Users { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<(bool confirmation, string username)> UserToDelete { get; set; }
+
+    private bool allowVirtualization;
+
+    private async Task HandleDelete((bool confirmation, string username) result) 
+    {
+        await UserToDelete.InvokeAsync((confirmation: result.confirmation, username: result.username));
+    }
 }
