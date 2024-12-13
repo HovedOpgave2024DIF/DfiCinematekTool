@@ -1,0 +1,19 @@
+﻿<RadzenButton Click="ToggleLockoutStatus" Text="@(LockoutStatus ? "Lås op" : "Lås")" Icon="lock" Shade="Shade.Light" ButtonStyle=@(LockoutStatus ? ButtonStyle.Warning : ButtonStyle.Success) Size="ButtonSize.ExtraSmall" />
+
+@code {
+	[Parameter]
+	public bool LockoutStatus { get; set; }
+
+	[Parameter]
+	public string Username { get; set; } = string.Empty;
+
+	[Parameter]
+	public EventCallback<(bool isLocked, string username)> OnLockout { get; set; }
+
+	private async Task ToggleLockoutStatus() 
+	{
+		LockoutStatus = !LockoutStatus;
+
+		await OnLockout.InvokeAsync((isLocked: LockoutStatus, username: Username));
+	}
+}

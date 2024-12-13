@@ -12,11 +12,13 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly CinematekDbContext _dbContext;
+		private readonly ApplicationUserAuthorization _userAuthorization;
 
-		public ApplicationUserRepository(UserManager<ApplicationUser> userManager, CinematekDbContext dbContext)
+		public ApplicationUserRepository(UserManager<ApplicationUser> userManager, CinematekDbContext dbContext, ApplicationUserAuthorization userAuthorization)
 		{
 			_userManager = userManager;
 			_dbContext = dbContext;
+			_userAuthorization = userAuthorization;
 		}
 
 		public async Task<List<User>> GetAllUsersAsync()
@@ -36,7 +38,8 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 						Id = applicationUser.Id,
 						UserName = applicationUser.UserName,
 						Email = applicationUser.Email,
-						Roles = roles.ToList()
+						Roles = roles.ToList(),
+						Lockout = applicationUser.LockoutEnd
 					});
 			}
 			return users;
@@ -197,6 +200,11 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 				throw new Exception($"Failed to remove user '{applicationUserToRemove.UserName}'. Errors: {string.Join(", ", userDeleted.Errors.Select(e => e.Description))}");
 
 			return true;
+		}
+
+		public async Task<bool> HandleUserLockoutAsync(string userName, bool isLocked)
+		{
+			return await _userAuthorization.HandleUserLockoutAsync(userName, isLocked);
 		}
 	}
 }
