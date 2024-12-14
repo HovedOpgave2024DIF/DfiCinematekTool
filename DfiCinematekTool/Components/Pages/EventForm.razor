@@ -50,7 +50,7 @@
 
 		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Date (DDMMYY)</RadzenText>
-			<RadzenNumeric @bind-Value=@Event.DateId TValue="int" ShowUpDown="false" Placeholder="DDMMYY" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
+			<RadzenDatePicker @bind-Value=@EventDate Name="EventDate" ShowCalendarWeek />
 
 		</div>
 
@@ -131,6 +131,9 @@
 
 	[Parameter]
 	public EventCallback<Event> OnValidEventSubmit { get; set; }
+
+	//date
+	DateTime? EventDate;
 
 	//Temp lists
 	[Parameter]

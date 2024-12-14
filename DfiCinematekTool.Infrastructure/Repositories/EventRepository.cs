@@ -15,42 +15,6 @@ namespace DfiCinematekTool.Infrastructure.Repositories
             _filmStatusRepository = filmStatusRepository;
 		}
 
-        /* public async Task<Event> CreateEventAsync(Event newEvent)
-         {
-             if (newEvent is null) throw new ArgumentNullException(nameof(newEvent), "New event cannot be null.");
-
-             if (newEvent.Films is not null)
-             {
-                 var filmIds = newEvent.Films.Select(f => f.Id).ToList();
-
-                 var existingFilms = await _dbContext.Films.Where(f => filmIds.Contains(f.Id)).ToListAsync();
-
-                 if (existingFilms.Count != filmIds.Count)
-                 {
-                     var missingIds = filmIds.Except(existingFilms.Select(f => f.Id));
-                     throw new InvalidOperationException($"Films with {string.Join(",", missingIds)} does not exist.");
-                 }
-
-                 newEvent.Films = existingFilms;
-
-                 // Ret lav if
-                 foreach (var film in newEvent.Films)
-                 {
-                     await _filmStatusRepository.CreateFilmStatusAsync(
-                         new FilmStatus
-                         {
-                             FilmId = film.Id,
-                             EventId = newEvent.Id
-                         }
-                     );
-                 }
-             }
-
-             await _dbContext.Events.AddAsync(newEvent);
-             await _dbContext.SaveChangesAsync();
-
-             return newEvent;
-         } */
 
         public async Task<Event> CreateEventAsync(Event newEvent)
         {
@@ -75,11 +39,10 @@ namespace DfiCinematekTool.Infrastructure.Repositories
                 newEvent.Films = existingFilms;
             }
 
-            // Save the Event first to generate its ID
+            
             await _dbContext.Events.AddAsync(newEvent);
             await _dbContext.SaveChangesAsync();
 
-            // Create FilmStatus entries after the Event has been saved
             if (newEvent.Films is not null)
             {
                 foreach (var film in newEvent.Films)
@@ -88,7 +51,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
                         new FilmStatus
                         {
                             FilmId = film.Id,
-                            EventId = newEvent.Id // newEvent.Id is now valid
+                            EventId = newEvent.Id 
                         }
                     );
                 }
