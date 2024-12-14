@@ -45,5 +45,6 @@ namespace DfiCinematekTool.Domain.Entities
 		public string? Abbriviation { get; set; } = string.Empty;
 
 		public ICollection<Film>? Films { get; set; } = new List<Film>();
+		public ICollection<FilmStatus>? FilmStatuses { get; set; } = new List<FilmStatus>();
 	}
 }
