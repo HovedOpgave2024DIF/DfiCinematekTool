@@ -83,23 +83,6 @@ h1:focus {
         background-color: indianred !important;
     }
 
-.rz-dialog-titlebar {
-    background-color: #ffffff !important;
-    color: #929292 !important;
-}
-.rz-dialog-title {
-    color: dimgrey !important;
-}
-
-.rz-dialog-confirm-message {
-    color: black !important;
-}
-
-.rz-dialog-content {
-    background-color: #ffffff !important;
-    color: #929292 !important; 
-}
-
 .rz-datalist-data li{
     padding: 0 0 0 0 !important;
 }

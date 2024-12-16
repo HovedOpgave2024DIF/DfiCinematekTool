@@ -34,7 +34,7 @@
         if (result.Succeeded)
         {
             Console.WriteLine("Sign-in successful."); // Toaster
-            Navigation.NavigateTo("/", forceLoad: true);
+            Navigation.NavigateTo("/EventOverview", forceLoad: true);
         }
         else if (result.IsLockedOut)
         {
