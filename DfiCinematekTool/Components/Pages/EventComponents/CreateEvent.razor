@@ -1,0 +1,21 @@
+﻿@page "/EventOverview/CreateEvent"
+@inject IEventService EventService
+@inject NavigationManager Navigation
+
+<PageTitle>
+	Create New Event
+</PageTitle>
+
+<div class="row justify-content-center">
+	<div class="col-6">
+		<EventForm IsEditMode="false" OnValidEventSubmit="CreateNewEvent" />
+	</div>
+</div>
+
+@code {
+	private async Task CreateNewEvent(Event newEvent)
+	{
+		await EventService.CreateEventAsync(newEvent);
+		Navigation.NavigateTo("/");
+	}
+}

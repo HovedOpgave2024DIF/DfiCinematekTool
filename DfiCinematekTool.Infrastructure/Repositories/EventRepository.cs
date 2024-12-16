@@ -33,8 +33,11 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 				newEvent.Films = existingFilms;
 
-				// Ret lav if
-				foreach (var film in newEvent.Films)
+                await _dbContext.Events.AddAsync(newEvent);
+                await _dbContext.SaveChangesAsync();
+
+                // Ret lav if
+                foreach (var film in newEvent.Films)
 				{
 					await _filmStatusRepository.CreateFilmStatusAsync(
 						new FilmStatus
@@ -46,8 +49,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 				}
 			}
 
-			await _dbContext.Events.AddAsync(newEvent);
-			await _dbContext.SaveChangesAsync();
+			
 
 			return newEvent;
 		}
