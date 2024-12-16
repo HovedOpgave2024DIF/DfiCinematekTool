@@ -21,7 +21,7 @@ namespace DfiCinematekTool.Domain.Entities
 		public string Screen { get; set; } = string.Empty;
 
 		[Column("DurationInMinutes")]
-		public int DurationInMinutes { get; set; }
+		public int DurationInMinutes { get; set; } = 0;
 
 		[Column("Owner")]
 		public string Owner { get; set; } = string.Empty;

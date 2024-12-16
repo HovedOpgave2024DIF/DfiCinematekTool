@@ -41,11 +41,6 @@
 		</div>
 
 		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Duration in minutes</RadzenText>
-			<RadzenNumeric @bind-Value=@Event.DurationInMinutes TValue="int" ShowUpDown="false" Placeholder="In minutes" InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "enter value" }})" />
-		</div>
-
-		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Date (DDMMYY)</RadzenText>
 			<RadzenDatePicker @bind-Value=@Event.Date Name="EventDate" ShowCalendarWeek />
 		</div>

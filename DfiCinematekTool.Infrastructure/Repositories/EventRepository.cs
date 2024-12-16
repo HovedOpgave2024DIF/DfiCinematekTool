@@ -33,6 +33,12 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 				newEvent.Films = existingFilms;
 
+				//Add duration
+				foreach (Film film in newEvent.Films) 
+				{
+					newEvent.DurationInMinutes += film.DurationInMinutes;
+				}
+
                 await _dbContext.Events.AddAsync(newEvent);
                 await _dbContext.SaveChangesAsync();
 
