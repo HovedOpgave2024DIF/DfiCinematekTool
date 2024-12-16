@@ -1,13 +1,13 @@
-﻿@page "/Events"
+﻿@inject IEventService EventService
 
-@inject IEventService EventService
-
-<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="0.5rem" class="rz-p-2">
-    <RadzenCheckBox @bind-Value="@allowVirtualization" Name="allowVirtualization" />
-    <RadzenLabel Text="Tillad virtualisering" Component="allowVirtualization" />
+<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.End" Gap="0.5rem" class="rz-p-2 rz-mb-2">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="0.5rem" class="rz-mb-1">
+        <RadzenCheckBox @bind-Value="@allowVirtualization" Name="allowVirtualization" />
+        <RadzenLabel Text="Virtualisering" Component="allowVirtualization" />
+    </RadzenStack>
 </RadzenStack>
 
-<RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height:500px;overflow:auto;" : "")"
+<RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height:600px;overflow:auto;" : "")"
 WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
 Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
     <Template Context="ev">
@@ -16,7 +16,6 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
             <RadzenRow Gap="0">
                 <RadzenColumn Size="12" SizeLG="2" class="rz-p-4" Style="min-height: 72px; background-color: var(--rz-secondary-lighter);">
                     <RadzenStack Gap="1rem" Orientation="Orientation.Vertical" AlignItems="AlignItems.Start">
-
                         <RadzenText class="rz-color-grey rz-mb-2" Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px">
                             @($"{ev.Date:dddd dd/MM/yyyy}")
                         </RadzenText>
@@ -59,12 +58,13 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
                 </RadzenColumn>
 
                 <RadzenColumn Size="12" SizeLG="3" class="rz-p-4">
-                    
                     <RadzenRow>
                         <RadzenStack Gap="1rem" Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Style="width: 100%;">
+
                             <RadzenText class="rz-color-grey rz-mb-2 " Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px;">
                                 Filmvisninger
                             </RadzenText>
+
                             @if (ev.Films?.Count > 0)
                             {
                                 @foreach (var film in ev.Films ?? [])
@@ -90,8 +90,8 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
                 <RadzenColumn Size="12" SizeLG="7" class="rz-p-4">
                     <RadzenRow class="scrollable" Style="overflow-x: auto; overflow-y: hidden; white-space:nowrap; max-height: 100%; padding-bottom: 20px">
                         <RadzenStack Gap="1.02rem" Orientation="Orientation.Vertical" AlignItems="AlignItems.Start" Style="width: 100%; height: 100%;">
-                            
                             <RadzenRow Gap="1.7rem" Style="display: flex; flex-wrap: nowrap;">
+
                                 <div style="width: 40px;">
                                     <RadzenText class="rz-color-grey rz-mb-2 " Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px;">
                                         Nøgle
@@ -108,22 +108,19 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
                                     <RadzenText class="rz-color-grey rz-mb-2 " Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px;">
                                         Modtaget
                                     </RadzenText>
-                                </div>          
-                                
+                                </div>           
+
                                 <div style="width: 110px; margin-left: 5px;">
                                     <RadzenText class="rz-color-grey rz-mb-2 " Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px;">
                                         Klargjort
                                     </RadzenText>
                                 </div>
 
-
-
                                 <div style="width: 110px; margin-left: 5px;">
                                     <RadzenText class="rz-color-grey rz-mb-2 " Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px;">
                                         Film Ok
                                     </RadzenText>
                                 </div>
-
 
                                 <div style="width: 150px; margin-left: 5px;">
                                     <RadzenText class="rz-color-grey rz-mb-2 " Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px;">
@@ -136,48 +133,36 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
                                 </div>
                             </RadzenRow>
 
-
                             @foreach (var eventFilmStatus in ev.FilmStatuses ?? [])
                             {
                                 <UpdateFilmStatusForm FilmStatus="@eventFilmStatus" OnValidFilmStatusSumbit="HandleFilStatusUpdate" />
                             }
-
                         </RadzenStack>
                     </RadzenRow>
                 </RadzenColumn>
-
             </RadzenRow>
-
         </RadzenCard>
-
     </Template>
 </RadzenDataList>
 
 <style>
     .event-info {
-        min-height: 72px;
-        background-color: var(--rz-secondary-lighter);
+    min-height: 72px;
+    background-color: var(--rz-secondary-lighter);
     }
 </style>
 
-
-
 @code {
-    private bool allowVirtualization;
-
+    [Parameter]
     public List<Event> Events { get; set; } = new();
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        Events = await EventService.GetAllEventsAsync();
-    }
 
     [Parameter]
     public EventCallback<FilmStatus> OnUpdateFilmStatus { get; set; }
 
     [Parameter]
     public EventCallback<(bool confirmation, int eventId)> DeleteConfirmation { get; set; }
+
+    private bool allowVirtualization;
 
     private async Task HandleFilStatusUpdate(FilmStatus filmStatus)
     {

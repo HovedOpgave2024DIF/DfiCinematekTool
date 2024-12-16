@@ -23,7 +23,23 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				new Film { Title = "En lille smule", OriginalTitle = "Bara Lite", Format = "DCP", DurationInMinutes = 9, SortOrder = 4 },
 				new Film { Title = "Min oldefars historier - Ridderne", Format = "DCP", DurationInMinutes = 9, SortOrder = 5 },
 				new Film { Title = "Pipfugle", Format = "DCP", DurationInMinutes = 9, SortOrder = 6 },
+				
+				new Film { Title = "Næsehornsdans", OriginalTitle = "Nashorntwist", Format = "DCP", DurationInMinutes = 3, SortOrder = 7 },
+				new Film { Title = "Mægtige maskiner – Tårnkran", Format = "DCP", DurationInMinutes = 6, SortOrder = 8 },
+				new Film { Title = "Peter Pix - Violinen", Format = "DCP", DurationInMinutes = 2, SortOrder = 9 },
+				new Film { Title = "Cirkeline – Månen er en gul ost", Format = "DCP", DurationInMinutes = 13, SortOrder = 10 },
+				new Film { Title = "Sallies historier – Hr. Wilders stjerne", Format = "DCP", DurationInMinutes = 7, SortOrder = 11 },
+				new Film { Title = "Rollinger - Raketten", Format = "DCP", DurationInMinutes = 8, SortOrder = 12 },
+
+				new Film { Title = "Totem - Ama og det magiske hulepindsvin", OriginalTitle = "Totem", Format = "DCP",DurationInMinutes = 98, SortOrder = 1 },
+
+				new Film { Title = "Morderenglen", OriginalTitle = "El ángel exterminador", Format = "DCP", DurationInMinutes = 95, SortOrder = 1 },
+
+				new Film { Title = "Blue Velvet", OriginalTitle = "", Format = "DCP 4K", DurationInMinutes = 120, SortOrder = 1 },
+
+				new Film { Title = "Jerusalem", OriginalTitle = "", Format = "35mm", DurationInMinutes = 168, SortOrder = 1 }
 			};
+
 
 			foreach (var film in films)
 			{
@@ -80,6 +96,122 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 						new Film { Id = 6 },
 					}
 				},
+				new Event
+				{
+					Title = "Børnebiffen 5-7 år",
+					DateId = 195219,
+					Date = new DateTime(2024, 11, 16, 12, 30, 0),
+					Screen = "Carl",
+					DurationInMinutes = 50,
+					Owner = "FILMHUSET\\christianh",
+					OwnerEmail = "",
+					EventType = "Serie",
+					IsEvent = true,
+					IsRooftop = false,
+					Published = true,
+					Abbriviation = "BORN",
+					Films = new List<Film>
+					{
+						new Film { Id = 7 },
+						new Film { Id = 8 },
+						new Film { Id = 9 },
+						new Film { Id = 10 },
+						new Film { Id = 11 },
+						new Film { Id = 12 },
+					}
+				},
+				new Event
+				{
+					Title = "Totem - Ama og det magiske hulepindsvin",
+					DateId = 196589,
+					Date = new DateTime(2024, 11, 16, 14, 15, 0),
+					Screen = "Carl",
+					DurationInMinutes = 98,
+					Owner = "FILMHUSET\\tobiash",
+					OwnerEmail = "tobiash@dfi.dk",
+					EventType = "Serie",
+					IsEvent = false,
+					IsRooftop = false,
+					Published = true,
+					Abbriviation = "EFTE",
+					Films = new List<Film>
+					{
+						new Film{ Id = 13 }
+					}
+				},
+				new Event
+				{
+					Title = "Morderenglen",
+					DateId = 197009,
+					Date = new DateTime(2024, 11, 17, 16, 0, 0),
+					Screen = "Asta",
+					DurationInMinutes = 95,
+					Owner = "PROD\\B034422",
+					OwnerEmail = "",
+					EventType = "Serie",
+					IsEvent = false,
+					IsRooftop = false,
+					Published = true,
+					Abbriviation = "SURR",
+					Films = new List<Film>
+					{
+						new Film { Id = 14 }
+					}
+				},
+				new Event
+				{
+					Title = "Blue Velvet",
+					DateId = 196826,
+					Date = new DateTime(2024, 11, 17, 16, 30, 0),
+					Screen = "Carl",
+					DurationInMinutes = 120,
+					Owner = "FILMHUSET\\mortent",
+					OwnerEmail = "mortent@dfi.dk",
+					EventType = "Serie",
+					IsEvent = false,
+					IsRooftop = false,
+					Published = true,
+					Abbriviation = "ØNSK",
+					Films = new List<Film>
+					{
+						new Film { Id = 15 }
+					}
+				},
+				new Event
+				{
+					Title = "East by (JA/TLH)",
+					DateId = 196413,
+					Date = new DateTime(2024, 11, 17, 18, 0, 0),
+					Screen = "Asta Bar",
+					DurationInMinutes = 180,
+					Owner = "FILMHUSET\\tobiash",
+					OwnerEmail = "tobiash@dfi.dk",
+					EventType = "Ekstern booking",
+					IsEvent = false,
+					IsRooftop = false,
+					Published = false,
+					Abbriviation = null,
+					Films = []
+				},
+				new Event
+				{
+					Title = "Jerusalem",
+					DateId = 197292,
+					Date = new DateTime(2024, 11, 17, 19, 0, 0),
+					Screen = "Carl",
+					DurationInMinutes = 168,
+					Owner = "FILMHUSET\\tobiash",
+					OwnerEmail = "tobiash@dfi.dk",
+					EventType = "Serie",
+					IsEvent = false,
+					IsRooftop = false,
+					Published = true,
+					Abbriviation = "NORD",
+					Films = new List<Film>
+					{
+						new Film { Id = 16 }
+					}
+				}
 			};
 
 			foreach (var ev in events)
@@ -182,7 +314,123 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 					PreparedDate = new DateTime(2024,12,2),
 					Comment = "Test Comment 6",
 					HasKey = false
+				},
+				
+				new FilmStatus()
+				{
+					EventId = 3,
+					FilmId = 7,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate =new DateTime(2024,12,2),
+					Comment = "Test Comment 1",
+					HasKey = true
+				},
+				new FilmStatus()
+				{
+					EventId = 3,
+					FilmId = 8,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 2",
+					HasKey = true
+				},
+				new FilmStatus()
+				{
+					EventId = 3,
+					FilmId = 9,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate =new DateTime(2024,12,2),
+					Comment = "Test Comment 3",
+					HasKey = true
+				},
+				new FilmStatus()
+				{
+					EventId = 3,
+					FilmId = 10,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 4",
+					HasKey = true
+				},
+				new FilmStatus()
+				{
+					EventId = 3,
+					FilmId = 11,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate =new DateTime(2024,12,2),
+					Comment = "Test Comment 5",
+					HasKey = false
+				},
+				new FilmStatus()
+				{
+					EventId = 3,
+					FilmId = 12,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 6",
+					HasKey = false
+				},
+
+				new FilmStatus()
+				{
+					EventId = 4,
+					FilmId = 13,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 7",
+					HasKey = false
+				},
+
+				new FilmStatus()
+				{
+					EventId = 5,
+					FilmId = 14,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 8",
+					HasKey = false
+				},
+
+				new FilmStatus()
+				{
+					EventId = 6,
+					FilmId = 15,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 9",
+					HasKey = false
+				},
+
+				new FilmStatus()
+				{
+					EventId = 8,
+					FilmId = 16,
+					OrderDate = new DateTime(2024,12,2),
+					ReceivedDate = new DateTime(2024,12,2),
+					CheckedDate = new DateTime(2024,12,2),
+					PreparedDate = new DateTime(2024,12,2),
+					Comment = "Test Comment 10",
+					HasKey = false
 				}
+
 			};
 
 			foreach (var fs in filmStatuses)
