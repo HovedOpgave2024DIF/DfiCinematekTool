@@ -151,6 +151,11 @@
 			if (existingEvent != null)
 			{
 				Event = existingEvent;
+
+				if (Event.Films.Any()) 
+				{ 
+						filmIds = Event.Films.Select(film => film.Id).ToList();
+				}
 			}
 		}
 	}
