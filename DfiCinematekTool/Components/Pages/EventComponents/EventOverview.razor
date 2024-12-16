@@ -3,20 +3,23 @@
 @inject IFilmStatusService FilmStatusService
 @inject ToasterService Toaster
 @inject NavigationManager Navigation
+@attribute [Authorize(Roles = "Admin, User")]
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <PageTitle>Event Overview</PageTitle>
 
-<RadzenRow class="rz-mb-6">
-	<RadzenButton Text="Opret event" Icon="add" Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" />
-</RadzenRow>
-
-@if (Events == null) 
+@if (!Events.Any()) 
 {
-	<h3>Loading...</h3>
+	<RadzenStack Gap="1rem" class="rz-m-12">
+		<RadzenText class="rz-color-warning" Text="Henter data.." TextStyle="TextStyle.DisplayH6" />
+		<RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Warning" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 10px;" />
+	</RadzenStack>
 }
 else 
 {
+	<RadzenRow class="rz-mb-6 rz-ml-2">
+		<RadzenButton Click=@(() => Navigation.NavigateTo("/EventOverview/CreateEvent")) Text="Opret event" Icon="add" Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" />
+	</RadzenRow>
 	<EventList Events="@Events" DeleteConfirmation="DeleteEvent" OnUpdateFilmStatus="UpdateFilmStatus"/>
 }
 

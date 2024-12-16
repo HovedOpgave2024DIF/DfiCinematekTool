@@ -1,6 +1,7 @@
 ﻿@page "/EventOverview/EditEvent/{id:int}"
 @inject IEventService EventService
 @inject NavigationManager Navigation
+@attribute [Authorize(Roles = "Admin, User")]
 
 <PageTitle>
 	Edit Event
@@ -19,6 +20,6 @@
 	private async Task EditExistingEvent(Event eventToEdit)
 	{
 		await EventService.UpdateEvent(eventToEdit);
-		Navigation.NavigateTo("/");
+		Navigation.NavigateTo("/EventOverview");
 	}
 }

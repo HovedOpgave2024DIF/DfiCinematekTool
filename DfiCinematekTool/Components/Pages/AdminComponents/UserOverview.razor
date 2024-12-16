@@ -2,15 +2,26 @@
 @inject IUserService UserService
 @inject ToasterService Toaster
 @inject NavigationManager Navigation
+@attribute [Authorize(Roles = "Admin")]
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <PageTitle>Brugeroversigt</PageTitle>
 
-<RadzenRow class="rz-mb-2 rz-ml-2">
-	<RadzenButton Click=@(() => Navigation.NavigateTo("/UserOverview/AddUser")) Text="Tilføj bruger" Icon="add" Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" />
-</RadzenRow>
+@if (!UserList.Any()) 
+{
+	<RadzenStack Gap="1rem" class="rz-m-12">
+		<RadzenText class="rz-color-warning" Text="Henter data.." TextStyle="TextStyle.DisplayH6" />
+		<RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Warning" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate" Style="height: 10px;" />
+	</RadzenStack>
+}
+else 
+{
+	<RadzenRow class="rz-mb-2 rz-ml-2">
+		<RadzenButton Click=@(() => Navigation.NavigateTo("/UserOverview/AddUser")) Text="Tilføj bruger" Icon="add" Shade="Shade.Light" ButtonStyle="ButtonStyle.Secondary" Size="ButtonSize.Small" />
+	</RadzenRow>
+	<UserList Users="@UserList" UserToDelete="DeleteUser" OnLockout="LockoutUser" />
+}
 
-<UserList Users="@UserList" UserToDelete="DeleteUser" OnLockout="LockoutUser" />
 
 @code {
 	public List<User> UserList { get; set; } = new();

@@ -33,11 +33,17 @@
     </RadzenStack>
 </RadzenStack>
 
-
+@if (FilteredEventList.Count <= 0)
+{
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.Center" Style="height: 80%;">
+        <RadzenText class="rz-color-warning" Text="Ingen events oprettet for denne måned.." TextStyle="TextStyle.DisplayH6" />
+    </RadzenStack>
+    return;
+}
 
 <RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height:600px;overflow:auto;" : "")"
-                WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
-                Data="@FilteredEventList" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
+Data="@FilteredEventList" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
     <Template Context="ev">
 
         <RadzenCard Variant="Variant.Outlined" class="rz-p-0" Style="width: 100%; overflow: hidden;">
@@ -45,7 +51,7 @@
                 <RadzenColumn Size="12" SizeLG="2" class="rz-p-4" Style="min-height: 72px; background-color: var(--rz-secondary-lighter);">
                     <RadzenStack Gap="1rem" Orientation="Orientation.Vertical" AlignItems="AlignItems.Start">
                         <RadzenText class="rz-color-grey rz-mb-2" Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px">
-                            @($"{ev.Date:dddd dd/MM/yyyy}")
+                            @($"{ev.Date:dddd dd/MM/yyyy}") 
                         </RadzenText>
 
                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-grey">
@@ -82,6 +88,9 @@
                             <strong style="display: block;">Tagbio:</strong>
                             @($"{(ev.IsRooftop == false ? "Nej" : "Ja")}")
                         </RadzenText>
+
+                        <DeleteEventDialog EventId="ev.Id" DialogConformation="HandleDeleteConfirmamtion" />
+
                     </RadzenStack>
                 </RadzenColumn>
 
@@ -157,14 +166,14 @@
                                     </RadzenText>
                                 </div>
 
-                                <div style="width: 40px; margin-left: 5px;">
+                                <!--<div style="width: 40px; margin-left: 5px;">
                                     <DeleteEventDialog EventId="ev.Id" DialogConformation="HandleDeleteConfirmamtion" />
-                                </div>
+                                </div>-->
                             </RadzenRow>
 
                             @foreach (var eventFilmStatus in ev.FilmStatuses ?? [])
                             {
-                                <UpdateFilmStatusForm FilmStatus="@eventFilmStatus" OnValidFilmStatusSumbit="HandleFilStatusUpdate" />
+                                <UpdateFilmStatusForm FilmStatus="@eventFilmStatus" OnValidFilmStatusSumbit="HandleFilmStatusUpdate" />
                             }
                         </RadzenStack>
                     </RadzenRow>
@@ -176,8 +185,8 @@
 
 <style>
     .event-info {
-        min-height: 72px;
-        background-color: var(--rz-secondary-lighter);
+    min-height: 72px;
+    background-color: var(--rz-secondary-lighter);
     }
 </style>
 
@@ -201,14 +210,22 @@
 
     private bool allowVirtualization;
 
-    
+
     protected override void OnInitialized()
     {
         FilteredEventList = Events;
-        OnCurrentDateChanged(DateTime.Now);
     }
 
-    private async Task HandleFilStatusUpdate(FilmStatus filmStatus)
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Events.Any())
+        {
+            OnCurrentDateChanged(DateTime.Now);
+        }
+        await Task.CompletedTask;
+    }
+
+    private async Task HandleFilmStatusUpdate(FilmStatus filmStatus)
     {
         await OnUpdateFilmStatus.InvokeAsync(filmStatus);
     }
