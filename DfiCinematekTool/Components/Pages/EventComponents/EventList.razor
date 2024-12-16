@@ -1,15 +1,43 @@
-﻿@inject IEventService EventService
+﻿<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.End" Gap="0.5rem" class="rz-p-2 rz-mb-2">
+    <RadzenStack Gap="1rem" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End">
+        <RadzenStack Gap="0.5rem">
+            <RadzenLabel Text="Vælg måned/år" Component="DatePickerYearMonth" />
+            <RadzenDatePicker @bind-Value=@selectedYearMonth ShowDays=false DateFormat="MM/yyyy" CurrentDateChanged=@OnCurrentDateChanged Name="DatePickerYearMonth" Style="width: 120px; height: 40px;" />
+        </RadzenStack>
 
-<RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.SpaceBetween" AlignItems="AlignItems.End" Gap="0.5rem" class="rz-p-2 rz-mb-2">
+        <RadzenStack Gap="0.5rem" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End" class="rz-mb-1">
+            <RadzenButton Click=@ResetCurrentDate Text="" Icon="calendar_month" Shade="Shade.Light" ButtonStyle="ButtonStyle.Base" Size="ButtonSize.Small" />
+        </RadzenStack>
+    </RadzenStack>
+
+    <RadzenStack Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End" Gap="1rem">
+        <RadzenStack Gap="0.5rem">
+            <RadzenLabel Text="Til dato" Component="DatePickerDateOnlyType" />
+            <RadzenDatePicker @bind-Value="@fromDate" DateFormat="dd/MM/yyyy" Name="DatePickerDateOnlyType" Style="width: 120px; height: 40px;" />
+        </RadzenStack>
+
+        <RadzenStack Gap="0.5rem">
+            <RadzenLabel Text="Fra dato" Component="DatePickerDateOnlyType" />
+            <RadzenDatePicker @bind-Value="@toDate" DateFormat="dd/MM/yyyy" Name="DatePickerDateOnlyType" Style="width: 120px; height: 40px;" />
+        </RadzenStack>
+
+        <RadzenStack Gap="0.5rem" Orientation="Orientation.Horizontal" JustifyContent="JustifyContent.Center" AlignItems="AlignItems.End" class="rz-mb-1">
+            <RadzenButton Click=@(() => FilterByDate(true)) Text="" Icon="calendar_add_on" Shade="Shade.Light" ButtonStyle="ButtonStyle.Base" Size="ButtonSize.Small" />
+            <RadzenButton Click=@(() => FilterByDate(false)) Text="" Icon="history" Shade="Shade.Light" ButtonStyle="ButtonStyle.Base" Size="ButtonSize.Small" />
+        </RadzenStack>
+    </RadzenStack>
+
     <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.End" Gap="0.5rem" class="rz-mb-1">
         <RadzenCheckBox @bind-Value="@allowVirtualization" Name="allowVirtualization" />
         <RadzenLabel Text="Virtualisering" Component="allowVirtualization" />
     </RadzenStack>
 </RadzenStack>
 
+
+
 <RadzenDataList AllowVirtualization=@allowVirtualization Style="@(allowVirtualization ? "height:600px;overflow:auto;" : "")"
-WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
-Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
+                WrapItems="@(!allowVirtualization)" AllowPaging="@(!allowVirtualization)"
+                Data="@FilteredEventList" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.Left" ShowPagingSummary="true">
     <Template Context="ev">
 
         <RadzenCard Variant="Variant.Outlined" class="rz-p-0" Style="width: 100%; overflow: hidden;">
@@ -71,7 +99,8 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
                                 {
                                     <RadzenText TextStyle="TextStyle.Body2" class="rz-color-grey">
                                         <strong style="display: block;">@($"{film.Title}")</strong>
-                                        <p>@($"{film.DurationInMinutes} minutter")
+                                        <p>
+                                            @($"{film.DurationInMinutes} minutter")
                                             <span style="padding-left: 10px;">@($"{film.Format}")</span>
                                         </p>
                                     </RadzenText>
@@ -108,7 +137,7 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
                                     <RadzenText class="rz-color-grey rz-mb-2 " Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px;">
                                         Modtaget
                                     </RadzenText>
-                                </div>           
+                                </div>
 
                                 <div style="width: 110px; margin-left: 5px;">
                                     <RadzenText class="rz-color-grey rz-mb-2 " Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px;">
@@ -147,8 +176,8 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
 
 <style>
     .event-info {
-    min-height: 72px;
-    background-color: var(--rz-secondary-lighter);
+        min-height: 72px;
+        background-color: var(--rz-secondary-lighter);
     }
 </style>
 
@@ -162,7 +191,22 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
     [Parameter]
     public EventCallback<(bool confirmation, int eventId)> DeleteConfirmation { get; set; }
 
+    public List<Event> FilteredEventList = new();
+
+    private DateOnly? fromDate = null;
+
+    private DateOnly? toDate = null;
+
+    private DateTime? selectedYearMonth = DateTime.Now;
+
     private bool allowVirtualization;
+
+    
+    protected override void OnInitialized()
+    {
+        FilteredEventList = Events;
+        OnCurrentDateChanged(DateTime.Now);
+    }
 
     private async Task HandleFilStatusUpdate(FilmStatus filmStatus)
     {
@@ -172,5 +216,40 @@ Data="@Events" TItem="Event" PageSize="5" PagerHorizontalAlign="HorizontalAlign.
     private async Task HandleDeleteConfirmamtion((bool confirmation, int eventId) result)
     {
         await DeleteConfirmation.InvokeAsync((confirmation: result.confirmation, eventId: result.eventId));
+    }
+
+    private void FilterByDate(bool filter)
+    {
+        if (fromDate is not null && toDate is not null)
+        {
+            var dateOnlyFromDate = fromDate?.ToDateTime(TimeOnly.MinValue);
+            var dateOnlyToDate = toDate?.ToDateTime(TimeOnly.MaxValue);
+
+            if (filter)
+            {
+                FilteredEventList = Events.Where(ev => ev.Date >= dateOnlyFromDate && ev.Date <= dateOnlyToDate).ToList();
+            }
+            else
+            {
+                FilteredEventList = Events;
+                fromDate = null;
+                toDate = null;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private void OnCurrentDateChanged(DateTime date)
+    {
+        selectedYearMonth = new DateTime(date.Year, date.Month, 1);
+        FilteredEventList = Events.Where(ev => ev.Date.Year == selectedYearMonth.Value.Year && ev.Date.Month == selectedYearMonth.Value.Month).ToList();
+        StateHasChanged();
+    }
+
+    private void ResetCurrentDate()
+    {
+        selectedYearMonth = null;
+        FilteredEventList = Events;
+        StateHasChanged();
     }
 }
