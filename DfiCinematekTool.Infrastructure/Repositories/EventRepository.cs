@@ -54,7 +54,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 		public async Task<List<Event>> GetAllEventsAsync()
 		{
-			return await _dbContext.Events.Include(f => f.Films).ToListAsync();
+			return await _dbContext.Events.Include(f => f.Films).Include(fs => fs.FilmStatuses).ToListAsync();
 		}
 
 		public async Task<List<Event>> GetPaginatedEventsAsync(int pageNumber, int pageSize)
