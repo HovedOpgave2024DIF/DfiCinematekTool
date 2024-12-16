@@ -1,6 +1,4 @@
-﻿Create event
-
-@page "/create-event"
+﻿@page "/EventOverview/CreateEvent"
 @inject IEventService EventService
 @inject NavigationManager Navigation
 
@@ -15,7 +13,6 @@
 </div>
 
 @code {
-
 	private async Task CreateNewEvent(Event newEvent)
 	{
 		await EventService.CreateEventAsync(newEvent);
