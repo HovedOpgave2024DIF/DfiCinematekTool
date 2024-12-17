@@ -3,16 +3,27 @@ using DfiCinematekTool.Application;
 using DfiCinematekTool.Infrastructure;
 using DfiCinematekTool.Infrastructure.Identity;
 using DfiCinematekTool.Infrastructure.Context;
+using DfiCinematekTool.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Radzen;
-using DfiCinematekTool.Services;
+using NLog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// NLog Configuration
+builder.Services.AddLogging(logging =>
+{
+	logging.ClearProviders();
+	logging.SetMinimumLevel(LogLevel.Trace);
+	logging.AddConsole();
+});
+
+builder.Services.AddSingleton<ILoggerProvider, NLogLoggerProvider>();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+	.AddInteractiveServerComponents();
 
 builder.Services.AddRadzenComponents();
 builder.Services.AddRadzenCookieThemeService(options =>
@@ -24,7 +35,7 @@ builder.Services.AddRadzenCookieThemeService(options =>
 
 builder.Services.AddDbContext<CinematekDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("CinematekConnection"));
+	options.UseSqlServer(builder.Configuration.GetConnectionString("CinematekConnection"));
 });
 
 builder.Services.AddSingleton<LoginStateService>();
@@ -72,9 +83,8 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+	app.UseExceptionHandler("/Error", createScopeForErrors: true);
+	app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -86,6 +96,6 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+	.AddInteractiveServerRenderMode();
 
 app.Run();

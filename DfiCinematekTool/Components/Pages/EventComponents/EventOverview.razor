@@ -33,42 +33,65 @@ else
 
 	private async Task UpdateFilmStatus(FilmStatus filmStatus) 
 	{
-		var result = await FilmStatusService.UpdateFilmStatusAsync(filmStatus);
-
-		if (result is not null) 
+		try
 		{
-			Toaster.OnSuccess(
-				"Filmstatus opdateret",
-				$"Filmstatus for {result?.Film?.Title} tilhørende event {result?.Event?.Title} er opdateret.",
+			var result = await FilmStatusService.UpdateFilmStatusAsync(filmStatus);
+
+			if (result is not null)
+			{
+				Toaster.OnSuccess(
+					"Filmstatus opdateret",
+					$"Filmstatus for {result?.Film?.Title} tilhørende event {result?.Event?.Title} er opdateret.",
+					6000
+				);
+			}
+		}
+		catch (Exception ex)
+		{
+			Toaster.OnError(
+				"Fejl opstået!",
+				$"{ex.Message}",
 				6000
 			);
 		}
 	}
 
-	private async Task DeleteEvent((bool confirmation, int eventId) result) {
-		if (result.confirmation)
+	private async Task DeleteEvent((bool confirmation, int eventId) result) 
+	{
+		try
 		{
-			var isDeleted = await EventService.DeleteEventById(result.eventId);
-
-			if (isDeleted)
+			if (result.confirmation)
 			{
-				Toaster.OnSuccess(
-					"Sletning af event gennemført!",
-					$"Alt data tilhørende Event med id {result.eventId} er slettet.",
-					6000
-				);
+				var isDeleted = await EventService.DeleteEventById(result.eventId);
 
-				Events = Events.Where(ev => ev.Id != result.eventId).ToList();
-				StateHasChanged();
+				if (isDeleted)
+				{
+					Toaster.OnSuccess(
+						"Sletning af event gennemført!",
+						$"Alt data tilhørende Event med id {result.eventId} er slettet.",
+						6000
+					);
+
+					Events = Events.Where(ev => ev.Id != result.eventId).ToList();
+					StateHasChanged();
+				}
+				else
+				{
+					Toaster.OnSuccess(
+						"Event ikke slettet!",
+						$"Fejl opstod under slettelse af Event med id {result.eventId}. Prøv igen.",
+						6000
+					);
+				}
 			}
-			else 
-			{
-				Toaster.OnSuccess(
-					"Event ikke slettet!",
-					$"Fejl opstod under slettelse af Event med id {result.eventId}. Prøv igen.",
-					6000
-				);
-			}
+		}
+		catch (Exception ex)
+		{
+			Toaster.OnError(
+				"Fejl opstået!",
+				$"{ex.Message}",
+				6000
+			);
 		}
 	}
 }

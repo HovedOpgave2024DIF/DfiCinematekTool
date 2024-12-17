@@ -1,6 +1,7 @@
 ﻿@page "/EventOverview/CreateEvent"
 @inject IEventService EventService
 @inject NavigationManager Navigation
+@inject ToasterService Toaster
 @attribute [Authorize(Roles = "Admin, User")]
 
 <PageTitle>
@@ -16,7 +17,18 @@
 @code {
 	private async Task CreateNewEvent(Event newEvent)
 	{
-		await EventService.CreateEventAsync(newEvent);
-		Navigation.NavigateTo("/EventOverview");
+		try
+		{
+			await EventService.CreateEventAsync(newEvent);
+			Navigation.NavigateTo("/EventOverview");
+		}
+		catch (Exception ex)
+		{
+			Toaster.OnError(
+				"Fejl opstået!",
+				$"{ex.Message}",
+				6000
+			);
+		}
 	}
 }

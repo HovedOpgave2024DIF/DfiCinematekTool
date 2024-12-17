@@ -1,6 +1,7 @@
 ﻿@page "/EventOverview/EditEvent/{id:int}"
 @inject IEventService EventService
 @inject NavigationManager Navigation
+@inject ToasterService Toaster
 @attribute [Authorize(Roles = "Admin, User")]
 
 <PageTitle>
@@ -19,7 +20,18 @@
 
 	private async Task EditExistingEvent(Event eventToEdit)
 	{
-		await EventService.UpdateEvent(eventToEdit);
-		Navigation.NavigateTo("/EventOverview");
+		try
+		{
+			await EventService.UpdateEvent(eventToEdit);
+			Navigation.NavigateTo("/EventOverview");
+		}
+		catch (Exception ex)
+		{
+			Toaster.OnError(
+				"Fejl opstået!",
+				$"{ex.Message}",
+				6000
+			);
+		}
 	}
 }
