@@ -1,18 +1,34 @@
 ﻿using DfiCinematekTool.Application.Interfaces;
 using DfiCinematekTool.Domain.Entities;
 using DfiCinematekTool.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace DfiCinematekTool.Application.Services
 {
     public class EventService : IEventService
     {
         private readonly IEventRepository _eventRepository;
-        public EventService(IEventRepository eventRepository)
+        private readonly ILogger<EventService> _logger; 
+        public EventService(IEventRepository eventRepository, ILogger<EventService> logger)
         {
             _eventRepository = eventRepository;
+            _logger = logger;
         }
 
-        public async Task<Event> CreateEventAsync(Event newEvent)
+		public async Task<List<Event>> GetAllEventsAsync()
+		{
+			try
+			{
+				return await _eventRepository.GetAllEventsAsync();
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error fetching all events");
+				throw;
+			}
+		}
+
+		public async Task<Event> CreateEventAsync(Event newEvent)
         {
             try
             {
@@ -20,22 +36,7 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
-                throw;
-            }
-        }
-
-        public async Task<List<Event>> GetAllEventsAsync()
-        {
-            try
-            {
-                return await _eventRepository.GetAllEventsAsync();
-            }
-            catch (Exception ex)
-            {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex, "Error creating event: {Title}", newEvent.Title);
                 throw;
             }
         }
@@ -48,9 +49,8 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
-                throw;
+				_logger.LogError(ex, "Error fetcing paginated events");
+				throw;
             }
         }
 
@@ -62,9 +62,8 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
-                throw;
+				_logger.LogError(ex, "Error fetching event with id: {id}", id);
+				throw;
             }
         }
 
@@ -76,8 +75,7 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex, "Error updating event: {Title}", updatedEvent.Title);
                 throw;
             }
         }
@@ -90,8 +88,7 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex, "Error deleting event with id: {id}", id);
                 throw;
             }
         }

@@ -1,6 +1,7 @@
 ﻿using DfiCinematekTool.Application.Interfaces;
 using DfiCinematekTool.Domain.Entities;
 using DfiCinematekTool.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace DfiCinematekTool.Application.Services
 {
@@ -8,9 +9,11 @@ namespace DfiCinematekTool.Application.Services
     public class FilmStatusService : IFilmStatusService
     {
 	    private readonly IFilmStatusRepository _filmStatusRepository;
-        public FilmStatusService(IFilmStatusRepository filmStatusRepository)
+        private readonly ILogger<FilmStatusService> _logger;
+        public FilmStatusService(IFilmStatusRepository filmStatusRepository, ILogger<FilmStatusService> logger)
         {
             _filmStatusRepository = filmStatusRepository;
+            _logger = logger;
         }
 
         public async Task<FilmStatus> CreateFilmStatusAsync(FilmStatus newFilmStatus)
@@ -21,8 +24,7 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex, "Error creating film status");
                 throw;
             }
         }
@@ -35,9 +37,8 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
-                throw;
+				_logger.LogError(ex, "Error fetching film status with event id: {evenId} and film id: {filmId}", eventId, filmId);
+				throw;
             }
         }
 
@@ -49,9 +50,8 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
-                throw;
+				_logger.LogError(ex, "Error updating film status by id: {Id} ", updateFilmStatus.Id);
+				throw;
             }
         }
 
@@ -63,9 +63,8 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
-                throw;
+				_logger.LogError(ex, "Error fetching film status with event id: {evenId} and film id: {filmId}", eventId, filmId);
+				throw;
             }
         }
     }

@@ -4,9 +4,9 @@
 
 <EditForm method="post" Model="@User" OnValidSubmit="AddOrEditUser" FormName="UserForm">
 	<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Style="width:100%;">
-		<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" class="rz-p-sm-11 rz-border-radius-2 rz-shadow-2" Style="width:100%; max-width: 400px;">
+		<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" class="rz-p-sm-11" Style="width:100%; max-width: 440px;">
 
-			<RadzenText class="rz-m-2" TextStyle="TextStyle.DisplayH6" Style="color:dimgray;">@title</RadzenText>
+			<RadzenText class="rz-m-2" TextStyle="TextStyle.DisplayH6">@title</RadzenText>
 
 			<RadzenFormField Text="Brugernavn" Variant="Variant.Outlined" Style="width: 100%;">
 				<RadzenTextBox @bind-Value="User.UserName" />

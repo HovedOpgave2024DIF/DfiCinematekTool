@@ -2,6 +2,7 @@
 @inject IUserService UserService
 @inject ToasterService Toaster
 @inject NavigationManager Navigation
+@attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>Opdater bruger</PageTitle>
 
@@ -17,16 +18,28 @@
 
 	private async Task HandleEditUser(User user)
 	{
-		var result = await UserService.UpdateUserAsync(user);
-
-		if (result is not null)
+		try
 		{
-			Toaster.OnSuccess(
-				$"Burgerdata opdateret",
-				$"Bruger {result?.UserName} er opdateret",
+			var result = await UserService.UpdateUserAsync(user);
+
+			if (result is not null)
+			{
+				Toaster.OnSuccess(
+					$"Burgerdata opdateret",
+					$"Bruger {result?.UserName} er opdateret",
+					6000
+				);
+				Navigation.NavigateTo("/UserOverview");
+			}
+		}
+		catch (Exception ex)
+		{
+			Toaster.OnError(
+				"Fejl opstået!",
+				$"{ex.Message}",
 				6000
 			);
-			Navigation.NavigateTo("/UserOverview");
 		}
+
 	}
 }

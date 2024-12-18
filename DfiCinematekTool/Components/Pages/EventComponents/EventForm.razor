@@ -1,7 +1,6 @@
 ﻿@inject IEventService EventService
 @inject IUserService UserService
 @inject IFilmService FilmService
-@inject IHttpContextAccessor HttpContextAccessor
 
 @if (Event is not null)
 {
@@ -9,11 +8,11 @@
 		<h3>
 			@Title
 		</h3>
+
 		@if (IsEditMode)
 		{
 			<input type="hidden" name="Book.Id" value="@Event.Id" />
 		}
-
 
 		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event title</RadzenText>
@@ -28,16 +27,20 @@
 
 		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event owner</RadzenText>
-			<!--<AuthorizeView Roles="Admin, User" Context="userContext1">
-			<Authorized Context="userAuthorizedContext1">-->
-			<RadzenTextBox Disabled="true" Value="admin@dfi.dk" Style="width: 100%; max-width: 400px;" Name="UserName" />
-			<!--</Authorized>
-			</AuthorizeView>-->
+			<AuthorizeView Roles="Admin, User" Context="userContext1">
+				<Authorized Context="userAuthorizedContext">
+					<RadzenTextBox Disabled="true" Value="@userAuthorizedContext.User.Identity?.Name" Style="width: 100%; max-width: 400px;" Name="UserName" />
+				</Authorized>
+			</AuthorizeView>
 		</div>
-
+			
 		<div class="mb-3">
 			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Owner Email</RadzenText>
-			<RadzenTextBox Disabled="true" Value="admin@dfi.dk" Style="width: 100%; max-width: 400px;" Name="UserEmail" />
+			<AuthorizeView Roles="Admin, User" Context="userContext1">
+				<Authorized Context="userAuthorizedContext">
+					<RadzenTextBox Disabled="true" Value="@userAuthorizedContext.User.Identity?.Name" Style="width: 100%; max-width: 400px;" Name="UserEmail" />
+				</Authorized>
+			</AuthorizeView>
 		</div>
 
 		<div class="mb-3">

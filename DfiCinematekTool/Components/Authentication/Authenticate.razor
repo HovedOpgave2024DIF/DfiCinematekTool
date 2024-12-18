@@ -10,41 +10,40 @@
         var username = LoginState.Username;
         var password = LoginState.Password;
 
-        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-        {
-            Console.WriteLine("Missing credentials."); // Add Toaster
-            Navigation.NavigateTo("/Login");
-            return;
-        }
+        LoginState.Username = string.Empty;
+        LoginState.Username = string.Empty;
 
         await PerformLogin(username, password);
     }
 
     private async Task PerformLogin(string Username, string Password)
     {
+
+        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+        {
+            Navigation.NavigateTo($"/Login", true);
+            return;
+        }
+
         var user = await UserService.GetUserByUserNameAsync(Username);
         if (user is null)
         {
-            Console.WriteLine("User not found.");  // Toaster
-            Navigation.NavigateTo("/Login");
+            Navigation.NavigateTo($"/Login?Error=Ugyldige loginoplysninger.", true);
             return;
         }
 
         var result = await SignInManager.PasswordSignInAsync(user.UserName, Password, false, false);
         if (result.Succeeded)
         {
-            Console.WriteLine("Sign-in successful."); // Toaster
-            Navigation.NavigateTo("/", forceLoad: true);
+            Navigation.NavigateTo("/EventOverview", true);
         }
         else if (result.IsLockedOut)
         {
-            Console.WriteLine("User is locked out."); // Toaster
-            Navigation.NavigateTo("/Login");
+            Navigation.NavigateTo($"/Login?Error=Bruger låst.", true);
         }
         else
         {
-            Console.WriteLine("Invalid login attempt."); // Toaster
-            Navigation.NavigateTo("/Login");
+            Navigation.NavigateTo($"/Login?Error=Ugyldig login forsøg.", true);
         }
     }
 }

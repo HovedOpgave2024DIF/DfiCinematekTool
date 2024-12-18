@@ -2,6 +2,7 @@
 @inject IUserService UserService
 @inject ToasterService Toaster
 @inject NavigationManager Navigation
+@attribute [Authorize(Roles = "Admin")]
 
 <PageTitle>Tilføj bruger</PageTitle>
 
@@ -14,17 +15,29 @@
 @code {
 	private async Task HandleAddUser(User user) 
 	{
-		var result = await UserService.CreateUserAsync(user);
-
-		if (result is not null)
+		try 
 		{
-			Toaster.OnSuccess(
-				"Ny burger tilføjet",
-				$"Bruger {result?.UserName} tilføjet.",
+			var result = await UserService.CreateUserAsync(user);
+
+			if (result is not null)
+			{
+				Toaster.OnSuccess(
+					"Ny burger tilføjet",
+					$"Bruger {result?.UserName} tilføjet.",
+					6000
+				);
+
+				Navigation.NavigateTo("/UserOverview");
+			}
+		}
+		catch (Exception ex) 
+		{
+			Toaster.OnError(
+				"Fejl opstået!",
+				$"{ex.Message}",
 				6000
 			);
-
-			Navigation.NavigateTo("/UserOverview");
 		}
+
 	}
 }

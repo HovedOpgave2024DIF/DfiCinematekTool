@@ -1,16 +1,19 @@
 ﻿using DfiCinematekTool.Application.Interfaces;
 using DfiCinematekTool.Domain.Entities;
 using DfiCinematekTool.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace DfiCinematekTool.Application.Services
 {
 	public class UserService : IUserService
 	{
 		private readonly IUserRepository _userRepository;
+		private readonly ILogger<UserService> _logger;
 
-		public UserService(IUserRepository userRepository)
+		public UserService(IUserRepository userRepository, ILogger<UserService> logger)
 		{
 			_userRepository = userRepository;
+			_logger = logger;
 		}
 
 		public async Task<List<User>> GetAllUsersAsync()
@@ -21,8 +24,7 @@ namespace DfiCinematekTool.Application.Services
 			}
 			catch (Exception ex)
 			{
-				//Implements logger for exception messages
-				Console.WriteLine(ex.Message);
+				_logger.LogError(ex, "Error fetching all users.");
 				throw;
 			}
 		}
@@ -35,8 +37,7 @@ namespace DfiCinematekTool.Application.Services
 			}
 			catch (Exception ex)
 			{
-				//Implements logger for exception messages
-				Console.WriteLine(ex.Message);
+				_logger.LogError(ex, "Error fetching user by username: {Username}", userName);
 				throw;
 			}
 		}
@@ -49,8 +50,7 @@ namespace DfiCinematekTool.Application.Services
 			}
 			catch (Exception ex)
 			{
-				//Implements logger for exception messages
-				Console.WriteLine(ex.Message);
+				_logger.LogError(ex, "Error creating user: {UserName}", user.UserName);
 				throw;
 			}
 		}
@@ -63,8 +63,7 @@ namespace DfiCinematekTool.Application.Services
 			}
 			catch (Exception ex)
 			{
-				//Implements logger for exception messages
-				Console.WriteLine(ex.Message);
+				_logger.LogError(ex, "Error updating user: {UserName}", user.UserName);
 				throw;
 			}
 		}
@@ -77,8 +76,7 @@ namespace DfiCinematekTool.Application.Services
 			}
 			catch (Exception ex)
 			{
-				//Implements logger for exception messages
-				Console.WriteLine(ex.Message);
+				_logger.LogError(ex, "Error deleting user: {Username}", userName);
 				throw;
 			}
 		}
@@ -91,7 +89,7 @@ namespace DfiCinematekTool.Application.Services
 			}
 			catch(Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				_logger.LogError(ex, "Error handling user lockout for: {Username}", userName);
 				throw;
 			}
 		}
