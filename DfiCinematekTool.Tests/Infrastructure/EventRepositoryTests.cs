@@ -244,7 +244,8 @@ namespace DfiCinematekTool.Tests.Infrastructure
 				Films = new List<Film>
 				{
 					new Film { Id = 2 },
-					new Film { Id = 3 }
+					new Film { Id = 3 },
+					new Film { Id = 1 }
 				}
 			};
 
@@ -255,13 +256,13 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.NotNull(updatedResult);
 			Assert.Equal("Updated Event Title", updatedResult.Title);
 			Assert.Equal(150, updatedResult.DurationInMinutes);
-			Assert.Equal(2, updatedResult.Films.Count);
+			Assert.Equal(3, updatedResult.Films.Count);
 
 			// Verify the changes are reflected in the database
 			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
 			Assert.Equal("Updated Event Title", dbEvent.Title);
-			Assert.Equal(2, dbEvent.Films.Count);
+			Assert.Equal(3, dbEvent.Films.Count);
 		}
 
 		[Fact]

@@ -135,8 +135,10 @@
 
 	public void AddFilmsToEvent()
 	{
+		Event.Films.Clear();
 		foreach (int filmId in filmIds)
 		{
+			
 			Event.Films?.Add(new Film { Id = filmId });
 		}
 	}

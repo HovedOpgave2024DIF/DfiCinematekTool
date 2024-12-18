@@ -88,12 +88,13 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 				.FirstOrDefaultAsync(ev => ev.Id == id);
 		}
 
+
+
         public async Task<Event?> UpdateEventAsync(Event updatedEvent)
         {
             if (updatedEvent is null)
                 throw new ArgumentNullException(nameof(updatedEvent), "Updated event cannot be null.");
 
-            // Step 1: Retrieve the existing event including its films
             var eventToUpdate = await _dbContext.Events
                 .Include(e => e.Films)
                 .FirstOrDefaultAsync(ev => ev.Id == updatedEvent.Id);
@@ -101,7 +102,6 @@ namespace DfiCinematekTool.Infrastructure.Repositories
             if (eventToUpdate is null)
                 return null;
 
-            // Step 2: Update scalar properties of the event
             eventToUpdate.Title = updatedEvent.Title;
             eventToUpdate.DateId = updatedEvent.DateId;
             eventToUpdate.Screen = updatedEvent.Screen;
@@ -114,40 +114,34 @@ namespace DfiCinematekTool.Infrastructure.Repositories
             eventToUpdate.Published = updatedEvent.Published;
             eventToUpdate.Abbriviation = updatedEvent.Abbriviation;
 
-            // Step 3: Manage Films (Additions, Removals, Updates)
-            var currentFilmIds = eventToUpdate.Films?.Select(f => f.Id).ToList() ?? [];
-            var updatedFilmIds = updatedEvent.Films?.Select(f => f.Id).ToList() ?? [];
+            var currentFilmIds = eventToUpdate?.Films?.Select(f => f.Id).ToList() ?? [];
+            var updatedFilmIds = updatedEvent?.Films?.Select(f => f.Id).ToList() ?? [];
 
-            // Identify films to add
             var filmsToAdd = updatedFilmIds.Except(currentFilmIds).ToList();
             foreach (var filmId in filmsToAdd)
             {
-                var filmToAdd = _dbContext.ChangeTracker.Entries<Film>()
-                    .FirstOrDefault(f => f.Entity.Id == filmId)?.Entity;
-
+                var filmToAdd = await _dbContext.Films.FindAsync(filmId);
                 if (filmToAdd != null)
                 {
-                    eventToUpdate.Films?.Add(filmToAdd);
+                    eventToUpdate?.Films?.Add(filmToAdd);
 
-                    // Create corresponding film status
                     await _filmStatusRepository.CreateFilmStatusAsync(new FilmStatus
                     {
                         FilmId = filmId,
-                        EventId = updatedEvent.Id
+                        EventId = updatedEvent?.Id
                     });
                 }
             }
 
-            // Identify films to remove
+
             var filmsToRemove = currentFilmIds.Except(updatedFilmIds).ToList();
             foreach (var filmId in filmsToRemove)
             {
-                var filmToRemove = eventToUpdate.Films?.FirstOrDefault(f => f.Id == filmId);
+                var filmToRemove = eventToUpdate?.Films?.FirstOrDefault(f => f.Id == filmId);
                 if (filmToRemove != null)
                 {
-                    eventToUpdate.Films?.Remove(filmToRemove);
+                    eventToUpdate?.Films?.Remove(filmToRemove);
 
-                    // Remove corresponding film status
                     var filmStatus = await _filmStatusRepository.GetFilmStatusByIdsAsync(updatedEvent.Id, filmId);
                     if (filmStatus != null)
                     {
@@ -156,80 +150,10 @@ namespace DfiCinematekTool.Infrastructure.Repositories
                 }
             }
 
-            // Step 4: Save changes
             await _dbContext.SaveChangesAsync();
 
             return eventToUpdate;
         }
-
-
-        /*public async Task<Event?> UpdateEventAsync(Event updatedEvent)
-		{
-			if (updatedEvent is null)
-				throw new ArgumentNullException(nameof(updatedEvent), "Updated event cannot be null.");
-
-			var eventToUpdate = await _dbContext.Events
-				.Include(e => e.Films)
-				.FirstOrDefaultAsync(ev => ev.Id == updatedEvent.Id);
-
-			if (eventToUpdate is null)
-				return null;
-
-			eventToUpdate.Title = updatedEvent.Title;
-			eventToUpdate.DateId = updatedEvent.DateId;
-			eventToUpdate.Screen = updatedEvent.Screen;
-			eventToUpdate.DurationInMinutes = updatedEvent.DurationInMinutes;
-			eventToUpdate.Owner = updatedEvent.Owner;
-			eventToUpdate.OwnerEmail = updatedEvent.OwnerEmail;
-			eventToUpdate.EventType = updatedEvent.EventType;
-			eventToUpdate.IsEvent = updatedEvent.IsEvent;
-			eventToUpdate.IsRooftop = updatedEvent.IsRooftop;
-			eventToUpdate.Published = updatedEvent.Published;
-			eventToUpdate.Abbriviation = updatedEvent.Abbriviation;
-
-
-			var currentFilmIds = eventToUpdate?.Films?.Select(f => f.Id).ToList() ?? [];
-			var updatedFilmIds = updatedEvent?.Films?.Select(f => f.Id).ToList() ?? [];
-
-			var filmsToAdd = updatedFilmIds.Except(currentFilmIds).ToList();
-			foreach (var filmId in filmsToAdd)
-			{
-                //var filmToAdd = await _dbContext.Films.FindAsync(filmId);
-                var filmToAdd = _dbContext.ChangeTracker.Entries<Film>().FirstOrDefault(f => f.Entity.Id == filmId)?.Entity;
-                if (filmToAdd != null)
-				{
-                    
-                    eventToUpdate?.Films?.Add(filmToAdd);
-
-                    await _filmStatusRepository.CreateFilmStatusAsync(new FilmStatus
-					{
-						FilmId = filmId,
-						EventId = updatedEvent?.Id
-					});
-				}
-			}
-
-
-			var filmsToRemove = currentFilmIds.Except(updatedFilmIds).ToList();
-			foreach (var filmId in filmsToRemove)
-			{
-				var filmToRemove = eventToUpdate?.Films?.FirstOrDefault(f => f.Id == filmId);
-				if (filmToRemove != null)
-				{
-					eventToUpdate?.Films?.Remove(filmToRemove);
-
-					var filmStatus = await _filmStatusRepository.GetFilmStatusByIdsAsync(updatedEvent.Id, filmId);
-					if (filmStatus != null)
-					{
-						await _filmStatusRepository.DeleteFilmStatusAsync(updatedEvent.Id, filmId);
-					}
-				}
-			}
-
-			await _dbContext.SaveChangesAsync();
-
-			return eventToUpdate;
-		}*/
 
         public async Task<bool> DeleteEventByIdAsync(int id)
 		{
