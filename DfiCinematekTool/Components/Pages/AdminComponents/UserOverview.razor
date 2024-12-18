@@ -33,59 +33,73 @@ else
 
 	private async Task DeleteUser((bool confirmation, string username) result) 
 	{
-		if (result.confirmation) {
-
-			var isDeleted = await UserService.DeleteUserByUserNameAsync(result.username);
-
-			if (isDeleted)
+		try 
+		{
+			if (result.confirmation)
 			{
-				UserList = UserList.Where(user => user.UserName != result.username).ToList();
+				var isDeleted = await UserService.DeleteUserByUserNameAsync(result.username);
 
-				StateHasChanged();
+				if (isDeleted)
+				{
+					UserList = UserList.Where(user => user.UserName != result.username).ToList();
 
-				Toaster.OnSuccess(
-					"Bruger fjernet!",
-					$"Bruger {result.username} er fjernet fra databasen.",
-					6000
-				);
+					StateHasChanged();
+
+					Toaster.OnSuccess(
+						"Bruger fjernet!",
+						$"Bruger {result.username} er fjernet fra databasen.",
+						6000
+					);
+				}
 			}
-			else
-			{
-				Toaster.OnError(
-					"Fejl. Bruger ikke fjernet!",
-					$"Bruger {result.username} kunne ikke fjernes.",
-					6000
-				);
-			}
+		}
+		catch (Exception ex)
+		{
+			Toaster.OnError(
+				"Fejl opstået!",
+				$"{ex}",
+				6000
+			);
 		}
 	}
 
 	private async Task LockoutUser((bool isLocked, string username) result)
 	{
-		var userIsLocked = await UserService.HandleUserLockoutAsync(result.username, result.isLocked);
+		try {
+			var userIsLocked = await UserService.HandleUserLockoutAsync(result.username, result.isLocked);
 
-		if(userIsLocked) 
-		{
-			UserList = await UserService.GetAllUsersAsync(); ;
-
-			StateHasChanged();
-
-			if (result.isLocked)
+			if (userIsLocked)
 			{
-				Toaster.OnWarning(
-				"Bruger adgang låst",
-				$"Bruger {result.username} låst for aktivitet.",
-				6000
-				);
-			}
-			else
-			{
-				Toaster.OnSuccess(
-				"Bruger adgang åbnet",
-				$"Bruger {result.username} låst op for aktivitet.",
-				6000
-				);
+				UserList = await UserService.GetAllUsersAsync(); ;
+
+				StateHasChanged();
+
+				if (result.isLocked)
+				{
+					Toaster.OnWarning(
+					"Bruger adgang låst",
+					$"Bruger {result.username} låst for aktivitet.",
+					6000
+					);
+				}
+				else
+				{
+					Toaster.OnSuccess(
+					"Bruger adgang åbnet",
+					$"Bruger {result.username} låst op for aktivitet.",
+					6000
+					);
+				}
 			}
 		}
+		catch (Exception ex)
+		{
+			Toaster.OnError(
+				"Fejl opstået!",
+				$"{ex.Message}",
+				6000
+			);
+		}
+
 	}
 }

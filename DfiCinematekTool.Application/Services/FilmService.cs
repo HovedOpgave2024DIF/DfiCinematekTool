@@ -1,15 +1,18 @@
 ﻿using DfiCinematekTool.Application.Interfaces;
 using DfiCinematekTool.Domain.Entities;
 using DfiCinematekTool.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace DfiCinematekTool.Application.Services
 {
     public class FilmService : IFilmService
     {
         private readonly IFilmRepository _filmRepository;
-        public FilmService(IFilmRepository filmRepository)
+        private readonly ILogger<FilmService> _logger;
+        public FilmService(IFilmRepository filmRepository, ILogger<FilmService> logger)
         {
             _filmRepository = filmRepository;
+            _logger = logger;
         }
 
         public async Task<List<Film>> GetAllFilmsAsync()
@@ -20,8 +23,7 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
+                _logger.LogError(ex, "Error fetching all films");
                 throw;
             }
         }
@@ -34,9 +36,8 @@ namespace DfiCinematekTool.Application.Services
             }
             catch (Exception ex)
             {
-                //Implements logger for exception messages
-                Console.WriteLine(ex.Message);
-                throw;
+				_logger.LogError(ex, "Error fetching paginated films");
+				throw;
             }
         }
     }
