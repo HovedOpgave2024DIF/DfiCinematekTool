@@ -10,11 +10,11 @@ namespace DfiCinematekTool.Domain.Entities
 
 		[Column("EventId")]
 		[ForeignKey(nameof(Event))]
-		public int? EventId { get; set; }
+		public int EventId { get; set; }
 
 		[Column("FilmId")]
 		[ForeignKey(nameof(Film))]
-		public int? FilmId { get; set; }
+		public int FilmId { get; set; }
 
 		public Event? Event { get; set; }
 

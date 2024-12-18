@@ -1,116 +1,111 @@
 ﻿@inject IEventService EventService
 @inject IUserService UserService
 @inject IFilmService FilmService
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @if (Event is not null)
 {
 	<EditForm method="post" FormName="CreateOrEditEventForm" OnValidSubmit="CreateOrEditEvent" Model="@Event" autocomplete="off">
-		<h3>
-			@Title
-		</h3>
+		<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" Style="width:100%;">
+			<RadzenStack Orientation="Orientation.Vertical" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="1rem" class="rz-p-sm-11" Style="width:100%; max-width: 500px;">
 
-		@if (IsEditMode)
-		{
-			<input type="hidden" name="Book.Id" value="@Event.Id" />
-		}
+				<RadzenText class="rz-mb-2" TextStyle="TextStyle.DisplayH6">@Title</RadzenText>
 
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event title</RadzenText>
-			<RadzenTextBox @bind-Value=@Event.Title Style="width: 100%" aria-label="Default TextBox" />
-		</div>
+				<RadzenFormField Text="Title" Variant="Variant.Outlined" Style="width: 100%;">
+					<RadzenTextBox @bind-Value="Event.Title" />
+				</RadzenFormField>
 
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event abbriviation</RadzenText>
-			<RadzenTextBox @bind-Value=@Event.Abbriviation Style="width: 100%" aria-label="Default TextBox" />
+				<RadzenFormField Text="Forkortelse" Variant="Variant.Outlined" Style="width: 100%;">
+					<RadzenTextBox @bind-Value="Event.Abbriviation" />
+				</RadzenFormField>
 
-		</div>
+				<RadzenFormField Text="Ejer" Variant="Variant.Outlined" Style="width: 100%;">
+					<RadzenTextBox @bind-Value="Event.Owner" Disabled />
+				</RadzenFormField>
 
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event owner</RadzenText>
-			<AuthorizeView Roles="Admin, User" Context="userContext1">
-				<Authorized Context="userAuthorizedContext">
-					<RadzenTextBox Disabled="true" Value="@userAuthorizedContext.User.Identity?.Name" Style="width: 100%; max-width: 400px;" Name="UserName" />
-				</Authorized>
-			</AuthorizeView>
-		</div>
-			
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Owner Email</RadzenText>
-			<AuthorizeView Roles="Admin, User" Context="userContext1">
-				<Authorized Context="userAuthorizedContext">
-					<RadzenTextBox Disabled="true" Value="@userAuthorizedContext.User.Identity?.Name" Style="width: 100%; max-width: 400px;" Name="UserEmail" />
-				</Authorized>
-			</AuthorizeView>
-		</div>
+				<RadzenFormField Text="Ejers email" Variant="Variant.Outlined" Style="width: 100%;">
+					<RadzenTextBox @bind-Value="Event.OwnerEmail" />
+				</RadzenFormField>
 
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Date (DDMMYY)</RadzenText>
-			<RadzenDatePicker @bind-Value=@Event.Date Name="EventDate" ShowCalendarWeek />
-		</div>
+				<RadzenFormField Text="Dato & Tid" Variant="Variant.Outlined" Style="width: 100%;">
+					<RadzenDatePicker @bind-Value="Event.Date" Name="EventDate" ShowCalendarWeek="true" />
+				</RadzenFormField>
 
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event type</RadzenText>
-			<RadzenDropDown @bind-Value=@Event.EventType Data=@EventTypeEnums Style="width: 100%; max-width: 400px;" Name="EventTypeDropdown" />
-		</div>
+				<RadzenDropDown class="rz-mt-2"
+				@bind-Value="Event.EventType"
+				Data="@EventTypeEnums"
+				TextProperty="@nameof(EventType.Event)"
+				ValueProperty="@nameof(EventType.Value)"
+				Multiple="false"
+				AllowClear="true"
+				Chips="true"
+				Placeholder="Angiv event"
+				Style="width: 100%;" />
 
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Screen</RadzenText>
-			<RadzenDropDown @bind-Value=@Event.Screen Data=@ScreenEnums Style="width: 100%; max-width: 400px;" Name="ScreenDropdown" />
-		</div>
+				<RadzenDropDown class="rz-mt-2"
+				@bind-Value="Event.Screen"
+				Data="@ScreenOptions"
+				TextProperty="@nameof(Screen.ScreenType)"
+				ValueProperty="@nameof(Screen.Value)"
+				Multiple="false"
+				AllowClear="true"
+				Chips="true"
+				Placeholder="Angiv skærm"
+				Style="width: 100%;" />
 
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Is Event?</RadzenText>
-			<RadzenCheckBox TValue="bool" @bind-Value=Event.IsEvent Change=@(args => Event.IsEvent = args) Name="IsEventCheck"></RadzenCheckBox>
-		</div>
+				<RadzenStack Style="width: 100%">
+					<RadzenDropDownDataGrid @ref="grid" Chips="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowClear="true" @bind-Value=@filmIds
+					Multiple="true" Placeholder="Vælgfilm" Data=@FilmList TextProperty="@nameof(Film.Title)" ValueProperty="@nameof(Film.Id)" Name="DropDownDataGridMultiple">
+						<Columns>
+							<RadzenDropDownDataGridColumn Width="60px" Sortable="false">
+								<HeaderTemplate>
+									<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select all" }})" Disabled="true" TriState="false" TValue="bool"
+									Value="@(FilmList.Any(f => filmIds != null && filmIds.Contains(f.Id)))"
+									Change="@(args => filmIds = args ? grid.View.Cast<Film>().Select(f => f.Id) : filmIds = Enumerable.Empty<int>())" />
+								</HeaderTemplate>
+								<Template Context="data">
+									<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select item" }})" TriState="false"
+									Value="@(filmIds != null && filmIds.Contains(((Film) data).Id))"
+									TValue="bool" Change=@(args => grid.SelectItem(data)) @onclick:stopPropagation />
+								</Template>
+							</RadzenDropDownDataGridColumn>
+							<RadzenDropDownDataGridColumn Property="@nameof(Film.Title)" Title="FilmTitle" Width="100px" />
+							<RadzenDropDownDataGridColumn Property="@nameof(Film.DurationInMinutes)" Title="FilmDuration" Width="100px" />
+						</Columns>
+					</RadzenDropDownDataGrid>
+				</RadzenStack>
 
-		<div class="mb-3">
-			<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Is Rooftop?</RadzenText>
-			<RadzenCheckBox TValue="bool" @bind-Value=Event.IsRooftop Change=@(args => Event.IsRooftop = args) Name="IsRooftopCheck"></RadzenCheckBox>
-		</div>
+				<RadzenRow Style="width: 100%" JustifyContent="JustifyContent.SpaceAround" AlignItems="AlignItems.Center">
 
+					<RadzenStack>
+						<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Event</RadzenText>
+						<RadzenCheckBox TValue="bool" @bind-Value=Event.IsEvent Change=@(args => Event.IsEvent = args) Name="IsEventCheck" Style="width: 25px; height: 25px;" />
+					</RadzenStack>
 
-		<div class="mb-3">
-			<RadzenLabel Text="Select Films" Component="DropDownDataGridMultiple" />
-			<RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center" Gap="0.5rem" class="rz-p-12">
-				<RadzenLabel Text="Select Values" Component="DropDownDataGridMultiple" />
-				<RadzenDropDownDataGrid @ref="grid" Chips="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" AllowClear="true" @bind-Value=@filmIds
-				Multiple="true" Placeholder="Select..." Data=@FilmList TextProperty="@nameof(Film.Title)" ValueProperty="@nameof(Film.Id)" Name="DropDownDataGridMultiple">
-					<Columns>
-						<RadzenDropDownDataGridColumn Width="60px" Sortable="false">
-							<HeaderTemplate>
-								<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select all" }})" Disabled="@(!grid.AllowSelectAll)" TriState="false" TValue="bool"
-								Value="@(FilmList.Any(f => filmIds != null && filmIds.Contains(f.Id)))"
-								Change="@(args => filmIds = args ? grid.View.Cast<Film>().Select(f => f.Id) : filmIds = Enumerable.Empty<int>())" />
-							</HeaderTemplate>
-							<Template Context="data">
-								<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select item" }})" TriState="false"
-								Value="@(filmIds != null && filmIds.Contains(((Film) data).Id))"
-								TValue="bool" Change=@(args => grid.SelectItem(data)) @onclick:stopPropagation />
-							</Template>
-						</RadzenDropDownDataGridColumn>
-						<RadzenDropDownDataGridColumn Property="@nameof(Film.Title)" Title="FilmTitle" Width="100px" />
-						<RadzenDropDownDataGridColumn Property="@nameof(Film.DurationInMinutes)" Title="FilmDuration" Width="100px" />
-					</Columns>
-				</RadzenDropDownDataGrid>
+					<RadzenStack>
+						<RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Tagbio</RadzenText>
+						<RadzenCheckBox TValue="bool" @bind-Value=Event.IsRooftop Change=@(args => Event.IsRooftop = args) Name="IsRooftopCheck" Style="width: 25px; height: 25px;"  />
+					</RadzenStack>
+				</RadzenRow>
+
+				<div class="rz-mb-8" style="display: flex; justify-content: space-between; align-items: center; width: 100%; max-width: 500px; gap: 1.5rem;">
+					<RadzenButton ButtonType="ButtonType.Submit" Shade="Shade.Light" Text="Ok" ButtonStyle="ButtonStyle.Success" class="rz-mt-4" Style="width: 100%;" />
+					<RadzenButton Click="@(() => Navigation.NavigateTo("/EventOverview"))" ButtonType="ButtonType.Reset" Shade="Shade.Light" Text="Tilbage" ButtonStyle="ButtonStyle.Base" class="rz-mt-4" Style="width: 100%;" />
+				</div>
 			</RadzenStack>
-		</div>
+		</RadzenStack>
 
-		<div class=" mb-3">
-			<button class="btn-primary shadow-none">
-				Submit
-			</button>
-			<a href="/" class="btn btn-secondary shadow-none ms-3">
-				Back to list
-			</a>
-		</div>
 		<DataAnnotationsValidator />
 		<ValidationSummary />
 	</EditForm>
 }
 
 @code {
+
+
 	[SupplyParameterFromForm]
-	public Event Event { get; set; } = new();
+	public Event Event { get; set; } = new Event();
 
 	[Parameter]
 	public bool IsEditMode { get; set; } = false;
@@ -118,46 +113,57 @@
 	[Parameter]
 	public int EventId { get; set; }
 
-	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Event";
-
 	[Parameter]
 	public EventCallback<Event> OnValidEventSubmit { get; set; }
-
-	//Enums for dropdown menus
-	public List<string> ScreenEnums = Enum.GetValues(typeof(Screen)).Cast<Screen>().Select(s => s.ToString()).ToList();
-
-	public List<string> EventTypeEnums = Enum.GetValues(typeof(EventType)).Cast<EventType>().Select(e => e.ToString()).ToList();
-
-	//For adding film data
-	RadzenDropDownDataGrid<IEnumerable<int>>? grid;
 
 	[Parameter]
 	public ICollection<Film> FilmList { get; set; } = new List<Film>();
 
-	public IEnumerable<int> filmIds { get; set; } = new List<int>();
+	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Event";
+
+	//Enums for dropdown menus
+	private List<Screen> ScreenOptions = Enum.GetValues(typeof(ScreenEnum)).Cast<ScreenEnum>().Select(screen => screen.ConvertScreenEnumToScreen()).ToList();
+	private List<EventType> EventTypeEnums = Enum.GetValues(typeof(EventTypeEnum)).Cast<EventTypeEnum>().Select(eventType => eventType.ConvertEventTypeEnumToEventType()).ToList();
+
+	//For adding film data
+	private RadzenDropDownDataGrid<IEnumerable<int>>? grid;
+
+
+	private IEnumerable<int> filmIds { get; set; } = new List<int>();
 
 	public void AddFilmsToEvent()
 	{
-		Event.Films.Clear();
-		foreach (int filmId in filmIds)
+		Event.Films?.Clear();
+
+		if (filmIds != null)
 		{
-			
-			Event.Films?.Add(new Film { Id = filmId });
+			foreach (var filmId in filmIds)
+			{
+				var film = FilmList.FirstOrDefault(f => f.Id == filmId);
+				if (film != null)
+				{
+					Event.Films?.Add(film);
+				}
+			}
 		}
 	}
 
 	protected override async Task OnInitializedAsync()
 	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		Event.Owner = authState.User.Identity?.Name!;
+
 		FilmList = await FilmService.GetAllFilmsAsync() ?? [];
 
 		if (IsEditMode)
 		{
+			Event.Owner = "";
 			var existingEvent = await EventService.GetEventById(EventId);
 			if (existingEvent != null)
 			{
 				Event = existingEvent;
 
-				if (Event.Films.Any()) 
+				if (Event.Films != null) 
 				{ 
 						filmIds = Event.Films.Select(film => film.Id).ToList();
 				}
