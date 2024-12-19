@@ -50,9 +50,11 @@ Data="@FilteredEventList" TItem="Event" PageSize="5" PagerHorizontalAlign="Horiz
             <RadzenRow Gap="0">
                 <RadzenColumn Size="12" SizeLG="2" class="rz-p-4" Style="min-height: 72px; background-color: var(--rz-secondary-lighter);">
                     <RadzenStack Gap="1rem" Orientation="Orientation.Vertical" AlignItems="AlignItems.Start">
-                        <RadzenText class="rz-color-grey rz-mb-2" Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px">
-                            @($"{ev.Date:dddd dd/MM/yyyy}") 
-                        </RadzenText>
+                        <a href=@($"/EventOverview/editevent/{ev.Id}") style="text-decoration: none; text-decoration-line: none;">
+                            <RadzenText class="rz-color-warning rz-mb-2" Style="font-size: 1rem; border-bottom: 1px solid lightgrey; padding-bottom: 11px">
+                                @($"{ev.Date:dddd dd/MM/yyyy}")
+                            </RadzenText>
+                        </a>
 
                         <RadzenText TextStyle="TextStyle.Body2" class="rz-color-grey">
                             <strong style="display: block;">Title:</strong>
@@ -166,9 +168,6 @@ Data="@FilteredEventList" TItem="Event" PageSize="5" PagerHorizontalAlign="Horiz
                                     </RadzenText>
                                 </div>
 
-                                <!--<div style="width: 40px; margin-left: 5px;">
-                                    <DeleteEventDialog EventId="ev.Id" DialogConformation="HandleDeleteConfirmamtion" />
-                                </div>-->
                             </RadzenRow>
 
                             @foreach (var eventFilmStatus in ev.FilmStatuses ?? [])
