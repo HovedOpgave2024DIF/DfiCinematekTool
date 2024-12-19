@@ -102,8 +102,6 @@
 }
 
 @code {
-
-
 	[SupplyParameterFromForm]
 	public Event Event { get; set; } = new Event();
 
@@ -121,16 +119,15 @@
 
 	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Event";
 
-	//Enums for dropdown menus
 	private List<Screen> ScreenOptions = Enum.GetValues(typeof(ScreenEnum)).Cast<ScreenEnum>().Select(screen => screen.ConvertScreenEnumToScreen()).ToList();
+
 	private List<EventType> EventTypeEnums = Enum.GetValues(typeof(EventTypeEnum)).Cast<EventTypeEnum>().Select(eventType => eventType.ConvertEventTypeEnumToEventType()).ToList();
 
-	//For adding film data
 	private RadzenDropDownDataGrid<IEnumerable<int>>? grid;
-
 
 	private IEnumerable<int> filmIds { get; set; } = new List<int>();
 
+	
 	public void AddFilmsToEvent()
 	{
 		Event.Films?.Clear();

@@ -1,6 +1,5 @@
 ﻿using DfiCinematekTool.Domain.Entities;
 using DfiCinematekTool.Domain.Interfaces;
-using DfiCinematekTool.Infrastructure.Context;
 using DfiCinematekTool.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +9,18 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 {
 	public class ApplicationUserRepository : IUserRepository 
 	{
+		#region Fields & Contstructor
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly CinematekDbContext _dbContext;
 		private readonly ApplicationUserAuthorization _userAuthorization;
 
-		public ApplicationUserRepository(UserManager<ApplicationUser> userManager, CinematekDbContext dbContext, ApplicationUserAuthorization userAuthorization)
+		public ApplicationUserRepository(UserManager<ApplicationUser> userManager, ApplicationUserAuthorization userAuthorization)
 		{
 			_userManager = userManager;
-			_dbContext = dbContext;
 			_userAuthorization = userAuthorization;
 		}
+		#endregion
 
+		#region Get all users
 		public async Task<List<User>> GetAllUsersAsync()
 		{
 			var applicationUsers = await _userManager.Users.ToListAsync();
@@ -30,7 +30,8 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			foreach (var applicationUser in applicationUsers)
 			{
 				if (applicationUser.UserName is null || applicationUser.Email is null) continue;
-
+					
+					// Find roles
 					var roles = await _userManager.GetRolesAsync(applicationUser);
 
 					users.Add(new User
@@ -44,8 +45,17 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			}
 			return users;
 		}
+		#endregion
 
+		#region Get user by name
 
+		/// <summary>
+		/// Finds a user by username.
+		/// </summary>
+		/// <param name="username"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArgumentException"></exception>
 		public async Task<User?> GetUserByUserNameAsync(string username)
 		{
 			if (string.IsNullOrWhiteSpace(username))
@@ -54,7 +64,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			if (int.TryParse(username, out _))
 				throw new ArgumentException($"User name '{username}' cannot be a number.", nameof(username));
 
-			//Find the user by username
+			//Find the user
 			var applicationUser = await _userManager.FindByNameAsync(username);
 			var user = new User();
 
@@ -70,7 +80,17 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 			return user;
 		}
+		#endregion
 
+		#region Create user
+
+		/// <summary>
+		/// Creates an ApplicationUser by passing an User entity.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="Exception"></exception>
 		public async Task<User?> CreateUserAsync(User user)
 		{
 			if (user is null)
@@ -82,13 +102,14 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			if (existingUserByName != null || existingUserByEmail != null)
 				throw new Exception($"User with username '{user.UserName}' or email '{user.Email}' already exists.");
 
-			// Create new user
+			// Create new ApplicationUser
 			var newApplicationUser = new ApplicationUser
 			{
 				UserName = user.UserName,
 				Email = user.Email,
 			};
 
+			// Create user
 			var result = await _userManager.CreateAsync(newApplicationUser, user.Password);
 
 			if (!result.Succeeded)
@@ -97,14 +118,22 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			// Add roles
 			if (user.Roles is not null)
 			{
-				var roleResult = await _userManager.AddToRolesAsync(newApplicationUser, user.Roles);
-
-				if (!roleResult.Succeeded)
-					throw new Exception($"Failed to assign roles to user '{user.UserName}'. Errors: {string.Join(", ", roleResult.Errors.Select(e => e.Description))}");
+				await _userAuthorization.HandleUserRolesAsync(user);
 			}
+
 			return user;
 		}
+		#endregion
 
+		#region Update user
+
+		/// <summary>
+		/// Updates the ApplicationUser's information by recieving a User entity.
+		/// </summary>
+		/// <param name="user"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="Exception"></exception>
 		public async Task<User?> UpdateUserAsync(User user)
 		{
 			if (user is null)
@@ -148,28 +177,9 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			// Update roles
 			if (user.Roles is not null)
 			{
-				var currentRoles = await _userManager.GetRolesAsync(applicationUser);
-
-				var rolesToAdd = user.Roles.Except(currentRoles).ToList();
-				var rolesToRemove = currentRoles.Except(user.Roles).ToList();
-
-				if (rolesToAdd.Count > 0)
-				{
-					var addRolesResult = await _userManager.AddToRolesAsync(applicationUser, rolesToAdd);
-
-					if (!addRolesResult.Succeeded)
-						throw new Exception($"Failed to add roles to user '{user.UserName}'. Errors: {string.Join(", ", addRolesResult.Errors.Select(e => e.Description))}");
-				}
-
-				if (rolesToRemove.Count > 0)
-				{
-					var removeRolesResult = await _userManager.RemoveFromRolesAsync(applicationUser, rolesToRemove);
-
-					if (!removeRolesResult.Succeeded)
-						throw new Exception($"Failed to remove roles from user '{user.UserName}'. Errors: {string.Join(", ", removeRolesResult.Errors.Select(e => e.Description))}");
-				}
+				await _userAuthorization.HandleUserRolesAsync(user);
 			}
-
+	
 			// Update user in the database
 			var updateResult = await _userManager.UpdateAsync(applicationUser);
 
@@ -178,7 +188,9 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 			return user;
 		}
+		#endregion
 
+		#region Delete user by name
 		public async Task<bool> DeleteUserByUserNameAsync(string userName)
 		{
 			if (string.IsNullOrWhiteSpace(userName))
@@ -187,13 +199,13 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			if (int.TryParse(userName, out _))
 				throw new ArgumentException($"User name '{userName}' cannot be a number.", nameof(userName));
 
-			// Find the user by username
+			// Find user by username
 			var applicationUserToRemove = await _userManager.FindByNameAsync(userName);
 
 			if (applicationUserToRemove is null)
 				return false; 
 
-			// Delete the user
+			// Delete user
 			var userDeleted = await _userManager.DeleteAsync(applicationUserToRemove);
 
 			if (!userDeleted.Succeeded)
@@ -201,10 +213,13 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 			return true;
 		}
+		#endregion
 
-		public async Task<bool> HandleUserLockoutAsync(string userName, bool isLocked)
+		#region Lockout user
+		public async Task<bool> LockoutUserAsync(string userName, bool isLocked)
 		{
 			return await _userAuthorization.HandleUserLockoutAsync(userName, isLocked);
 		}
+		#endregion
 	}
 }

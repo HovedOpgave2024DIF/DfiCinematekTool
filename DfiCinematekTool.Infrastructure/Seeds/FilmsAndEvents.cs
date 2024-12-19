@@ -40,7 +40,6 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				new Film { Title = "Jerusalem", OriginalTitle = "", Format = "35mm", DurationInMinutes = 168, SortOrder = 1 }
 			};
 
-
 			foreach (var film in films)
 			{
 				

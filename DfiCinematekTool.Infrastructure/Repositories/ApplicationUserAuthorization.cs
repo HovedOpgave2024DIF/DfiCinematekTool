@@ -2,17 +2,31 @@
 using DfiCinematekTool.Infrastructure.Interfaces;
 using DfiCinematekTool.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
+using DfiCinematekTool.Domain.Entities;
 
 namespace DfiCinematekTool.Infrastructure.Repositories
 {
 	public class ApplicationUserAuthorization : IAuthorization
 	{
+		#region Fields & Contructor
 		private readonly UserManager<ApplicationUser> _userManager;
 		public ApplicationUserAuthorization(UserManager<ApplicationUser> userManager)
 		{
 			_userManager = userManager;
 		}
+		#endregion
 
+		#region Handle user lockout
+
+		/// <summary>
+		/// Enables and disables a user to login to the application.
+		/// </summary>
+		/// <param name="userName"></param>
+		/// <param name="isLocked"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="KeyNotFoundException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		public async Task<bool> HandleUserLockoutAsync(string userName, bool isLocked)
 		{
 			if (string.IsNullOrWhiteSpace(userName))
@@ -25,6 +39,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 			if (isLocked)
 			{
+				// Lock user
 				var lockoutResult = await _userManager.SetLockoutEndDateAsync(applicationUser, DateTimeOffset.MaxValue);
 
 				if (!lockoutResult.Succeeded)
@@ -32,6 +47,7 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			}
 			else
 			{
+				// Unlock user
 				var unlockResult = await _userManager.SetLockoutEndDateAsync(applicationUser, null);
 
 				if (!unlockResult.Succeeded)
@@ -39,45 +55,63 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			}
 
 			var lockoutEnabled = await _userManager.SetLockoutEnabledAsync(applicationUser, true);
+
 			if (!lockoutEnabled.Succeeded)
 				throw new InvalidOperationException($"Failed to enable lockout for user '{userName}'.");
 
 			return true;
 		}
+		#endregion
 
-		public async Task<bool> HandleUserRolesAsync(string userName, UserRoleEnum userRole)
+		#region Handle user roles
+
+		/// <summary>
+		/// Adds and removes authorization roles on a user.
+		/// </summary>
+		/// <param name="userName"></param>
+		/// <param name="userRole"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="KeyNotFoundException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		public async Task<bool> HandleUserRolesAsync(User user)
 		{
-			if (!string.IsNullOrWhiteSpace(userName))
-				throw new ArgumentNullException(nameof(userName), "User name cannot be empty.");
+			if (user is null)
+				throw new ArgumentNullException(nameof(user), "User cannot be empty.");
 
-			var applicationUser = await _userManager.FindByNameAsync(userName);
+			var applicationUser = await _userManager.FindByNameAsync(user.UserName);
 
 			if (applicationUser is null)
-				throw new KeyNotFoundException($"User '{userName}' not found.");
+				throw new KeyNotFoundException($"User '{user.UserName}' not found.");
 
-			var currentRoles = await _userManager.GetRolesAsync(applicationUser);
-
-			// Remove all current roles
-			if (currentRoles.Any())
+			if (user.Roles is not null)
 			{
-				var removeRolesResult = await _userManager.RemoveFromRolesAsync(applicationUser, currentRoles);
-				if (!removeRolesResult.Succeeded)
-					throw new InvalidOperationException($"Failed to remove roles from user '{userName}'. Errors: {string.Join(", ", removeRolesResult.Errors.Select(e => e.Description))}");
+				var currentRoles = await _userManager.GetRolesAsync(applicationUser);
+
+				var rolesToAdd = user.Roles.Except(currentRoles).ToList();
+				var rolesToRemove = currentRoles.Except(user.Roles).ToList();
+
+				if (rolesToAdd.Count > 0)
+				{
+					// Add roles
+					var addRolesResult = await _userManager.AddToRolesAsync(applicationUser, rolesToAdd);
+					
+					if (!addRolesResult.Succeeded)
+						throw new Exception($"Failed to add roles to user '{user.UserName}'. Errors: {string.Join(", ", addRolesResult.Errors.Select(e => e.Description))}");
+				}
+
+				if (rolesToRemove.Count > 0)
+				{
+					// Remove roles
+					var removeRolesResult = await _userManager.RemoveFromRolesAsync(applicationUser, rolesToRemove);
+
+					if (!removeRolesResult.Succeeded)
+						throw new Exception($"Failed to remove roles from user '{user.UserName}'. Errors: {string.Join(", ", removeRolesResult.Errors.Select(e => e.Description))}");
+				}
 			}
-
-			// Add the new role
-			var newRole = userRole.ToString();
-			var addRoleResult = await _userManager.AddToRoleAsync(applicationUser, newRole);
-
-			if (!addRoleResult.Succeeded)
-				throw new InvalidOperationException($"Failed to assign role '{newRole}' to user '{userName}'. Errors: {string.Join(", ", addRoleResult.Errors.Select(e => e.Description))}");
 
 			return true;
 		}
-
-		public Task<bool> HandleUserPermissionsAsync()
-		{
-			throw new NotImplementedException();
-		}
+		#endregion
 	}
 }

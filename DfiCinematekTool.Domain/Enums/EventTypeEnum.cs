@@ -1,9 +1,9 @@
 ﻿namespace DfiCinematekTool.Domain.Enums
 {
-    public enum EventTypeEnum
-    {
+	public enum EventTypeEnum
+	{
 		Ekstern = 1,
-        Intern = 2,
-        Serie = 3
-    }
+		Intern = 2,
+		Serie = 3
+	}
 }

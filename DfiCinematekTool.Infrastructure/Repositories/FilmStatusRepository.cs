@@ -7,13 +7,38 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 {
 	public class FilmStatusRepository : IFilmStatusRepository
 	{
+		#region Fields & Constructor
 		private readonly CinematekDbContext _dbContext;
 
 		public FilmStatusRepository(CinematekDbContext dbContext)
 		{
 			_dbContext = dbContext;
 		}
+		#endregion
 
+		#region Get film status by id
+		public async Task<FilmStatus?> GetFilmStatusByIdsAsync(int eventId, int filmId)
+		{
+			if (eventId < 1)
+				throw new ArgumentOutOfRangeException(nameof(eventId), "Event id cannot be 0.");
+
+			if (filmId < 1)
+				throw new ArgumentOutOfRangeException(nameof(eventId), "Film id cannot be 0.");
+
+			return await _dbContext.FilmStatuses.
+				FirstOrDefaultAsync(fs => fs.EventId == eventId && fs.FilmId == filmId);
+		}
+		#endregion
+
+		#region Create film status
+
+		/// <summary>
+		/// Creates a films status given that the FilmStatus entity has an event id and film id
+		/// </summary>
+		/// <param name="newFilmStatus"></param>
+		/// <returns></returns>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
 		public async Task<FilmStatus> CreateFilmStatusAsync(FilmStatus newFilmStatus)
 		{
 			if (newFilmStatus is null)
@@ -31,18 +56,9 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 			return newFilmStatus;
 		}
+		#endregion
 
-		public async Task<FilmStatus?> GetFilmStatusByIdsAsync(int eventId, int filmId)
-		{
-			if (eventId < 1)
-				throw new ArgumentOutOfRangeException(nameof(eventId), "Event id cannot be 0.");
-
-			if (filmId < 1)
-				throw new ArgumentOutOfRangeException(nameof(eventId), "Film id cannot be 0.");
-
-			return await _dbContext.FilmStatuses.
-				FirstOrDefaultAsync(fs => fs.EventId == eventId && fs.FilmId == filmId);
-		}
+		#region Update film status
 
 		public async Task<FilmStatus?> UpdateFilmStatusAsync(FilmStatus updateFilmStatus)
 		{
@@ -52,27 +68,21 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 			var filmStatusToUpdate = await _dbContext.FilmStatuses.FindAsync(updateFilmStatus.Id);
 
 			if (filmStatusToUpdate is null)
-				return null;
-
-			filmStatusToUpdate.EventId = updateFilmStatus.EventId;
-			filmStatusToUpdate.FilmId = updateFilmStatus.FilmId;
-			filmStatusToUpdate.ReceivedDate = updateFilmStatus.ReceivedDate;
-			filmStatusToUpdate.CheckedDate = updateFilmStatus.CheckedDate;
-			filmStatusToUpdate.PreparedDate = updateFilmStatus.PreparedDate;
-			filmStatusToUpdate.Comment = updateFilmStatus.Comment;
-			filmStatusToUpdate.HasKey = updateFilmStatus.HasKey;
+				throw new Exception($"Film status not found.");
 
 			await _dbContext.SaveChangesAsync();
 
 			return filmStatusToUpdate;
 		}
+		#endregion
 
+		#region Delete film status
 		public async Task<bool> DeleteFilmStatusAsync(int eventId, int filmId)
 		{
-			if (eventId < 1)
+			if (eventId <= 0)
 				throw new ArgumentOutOfRangeException(nameof(eventId), "Event id cannot be 0.");
 
-			if (filmId < 1)
+			if (filmId <= 0)
 				throw new ArgumentOutOfRangeException(nameof(filmId), "Film id cannot be 0.");
 
 			var filmStatus = await GetFilmStatusByIdsAsync(eventId, filmId);
@@ -85,5 +95,6 @@ namespace DfiCinematekTool.Infrastructure.Repositories
 
 			return true;
 		}
+		#endregion
 	}
 }
