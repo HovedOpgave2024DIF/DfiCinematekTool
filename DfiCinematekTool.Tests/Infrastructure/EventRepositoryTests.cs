@@ -140,7 +140,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal("New Event", createdEvent.Title);
 			Assert.Equal(2, createdEvent?.Films?.Count);
 
-			var savedEvent = await _eventRepository.GetEventByIdAsync(createdEvent.Id);
+			var savedEvent = await _eventRepository.GetEventByIdAsync(createdEvent!.Id);
 			Assert.NotNull(savedEvent);
 			Assert.Equal("New Event", savedEvent.Title);
 			Assert.Equal(2, savedEvent?.Films?.Count);
@@ -253,12 +253,12 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.NotNull(updatedResult);
 			Assert.Equal("Updated Event Title", updatedResult.Title);
 			Assert.Equal(150, updatedResult.DurationInMinutes);
-			Assert.Equal(3, updatedResult.Films.Count);
+			Assert.Equal(3, updatedResult?.Films?.Count);
 
 			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
 			Assert.Equal("Updated Event Title", dbEvent.Title);
-			Assert.Equal(3, dbEvent.Films.Count);
+			Assert.Equal(3, dbEvent.Films?.Count);
 		}
 
 		[Fact]
@@ -301,7 +301,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 				DateId = 123,
 				Films = new List<Film>
 				{
-					new Film { Id = 2 } // Removing other films
+					new Film { Id = 2 }
 		        }
 			};
 
@@ -310,13 +310,13 @@ namespace DfiCinematekTool.Tests.Infrastructure
 
 			// Assert
 			Assert.NotNull(updatedResult);
-			Assert.Single(updatedResult.Films);
-			Assert.Contains(updatedResult.Films, f => f.Id == 2);
+			Assert.Single(updatedResult.Films!);
+			Assert.Contains(updatedResult.Films!, f => f.Id == 2);
 
 			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
-			Assert.Single(dbEvent.Films);
-			Assert.Contains(dbEvent.Films, f => f.Id == 2);
+			Assert.Single(dbEvent.Films!);
+			Assert.Contains(dbEvent.Films!, f => f.Id == 2);
 		}
 
 		[Fact]
