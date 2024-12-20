@@ -69,7 +69,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 		{
 			// Act & Assert
 			var exception = await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-				await _filmStatusRepository.CreateFilmStatusAsync(null));
+				await _filmStatusRepository.CreateFilmStatusAsync(null!));
 
 			Assert.Equal("New film status cannot be null. (Parameter 'newFilmStatus')", exception.Message);
 		}
@@ -173,7 +173,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 		{
 			// Act & Assert
 			var exception = await Assert.ThrowsAsync<ArgumentNullException>(async () =>
-				await _filmStatusRepository.UpdateFilmStatusAsync(null));
+				await _filmStatusRepository.UpdateFilmStatusAsync(null!));
 
 			Assert.Equal("Updated film status cannot be null. (Parameter 'updateFilmStatus')", exception.Message);
 		}

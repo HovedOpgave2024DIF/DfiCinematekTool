@@ -283,11 +283,11 @@ namespace DfiCinematekTool.Tests.Infrastructure
 
 			// Assert
 			Assert.NotNull(updatedResult);
-			Assert.Contains(updatedResult.Films, f => f.Id == 3);
+			Assert.Contains(updatedResult.Films!, f => f.Id == 3);
 
 			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
-			Assert.Contains(dbEvent.Films, f => f.Id == 3);
+			Assert.Contains(dbEvent.Films!, f => f.Id == 3);
 		}
 
 		[Fact]
@@ -325,7 +325,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			// Act & Assert
 			var exception = await Assert.ThrowsAsync<ArgumentNullException>(async () =>
 			{
-				await _eventRepository.UpdateEventAsync(null);
+				await _eventRepository.UpdateEventAsync(null!);
 			});
 
 			Assert.Equal("Updated event cannot be null. (Parameter 'updatedEvent')", exception.Message);
