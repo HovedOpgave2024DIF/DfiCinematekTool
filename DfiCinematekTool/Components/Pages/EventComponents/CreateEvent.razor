@@ -2,7 +2,7 @@
 @inject IEventService EventService
 @inject NavigationManager Navigation
 @inject ToasterService Toaster
-@attribute [Authorize(Roles = "Admin, User")]
+@attribute [Authorize(Roles = "Administrator, Operatør, Programredaktør")]
 
 <PageTitle>
 	Ópret event

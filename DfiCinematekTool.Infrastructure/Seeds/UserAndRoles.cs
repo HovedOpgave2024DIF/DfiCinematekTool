@@ -37,7 +37,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 			{
 				new ApplicationUser
 				{
-					UserName = "admin@dfi.dk",
+					UserName = "Admin",
 					NormalizedUserName = "ADMIN@DFI.DK",
 					Email = "admin@dfi.dk",
 					NormalizedEmail = "ADMIN@DFI.DK",
@@ -45,15 +45,7 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 				},
 				new ApplicationUser
 				{
-					UserName = "user@dfi.dk",
-					NormalizedUserName = "USER@DFI.DK",
-					Email = "user@dfi.dk",
-					NormalizedEmail = "USER@DFI.DK",
-					EmailConfirmed = true,
-				},
-				new ApplicationUser
-				{
-					UserName = "jamora",
+					UserName = "Jamora",
 					NormalizedUserName = "JAMORA",
 					Email = "jamora@dfi.dk",
 					NormalizedEmail = "JAMORA@DFI.DK",
@@ -66,38 +58,27 @@ namespace DfiCinematekTool.Infrastructure.Seeds
 					Email = "johnsmith@dfi.dk",
 					NormalizedEmail = "JOHNSMITH@DFI.DK",
 					EmailConfirmed = true,
-				},
-				new ApplicationUser
-				{
-					UserName = "JaneSmith",
-					NormalizedUserName = "JANESMITH",
-					Email = "janesmith@dfi.dk",
-					NormalizedEmail = "JANESMITH@DFI.DK",
-					EmailConfirmed = true,
 				}
 			};
 
-			string[] roles = ["Admin", "User"];
+			string[] roles = ["Administrator", "Operatør", "Programredaktør"];
+			string[] usernames = ["Admin", "Jamora", "JohnSmith"];
 
-			foreach (var user in users)
-			{
-				if (await userManager.FindByEmailAsync(user.Email ?? string.Empty) == null)
-				{
-					var result = await userManager.CreateAsync(user, "Password123!");
+            for (int i = 0; i < users.Count; i++)
+            {
+                var user = users[i];
+                var role = roles[i];
 
-					if (result.Succeeded)
-					{
-						await userManager.AddToRoleAsync(
-							user,
-							user.Email == "admin@dfi.dk" ? roles[0] : roles[1]
-						);
-					}
-					else
-					{
-						throw new InvalidOperationException($"User with ID {user.Id} does not exist in the database.");
-					}
-				}
-			}
-		}
+                if (await userManager.FindByNameAsync(user.UserName ?? string.Empty) == null)
+                {
+                    var result = await userManager.CreateAsync(user, "Password123!");
+
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, role);
+                    }
+                }
+            }
+        }
 	}
 }

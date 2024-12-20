@@ -1,6 +1,6 @@
 ﻿@inherits LayoutComponentBase
 @inject CookieThemeService CookieThemeService
-@attribute [Authorize(Roles = "Admin")]
+@attribute [Authorize(Roles = "Administrator")]
 <RadzenComponents @rendermode="InteractiveServer" /> 
 
 <RadzenLayout Style="grid-template-areas: 'rz-sidebar rz-header' 'rz-sidebar rz-body';">
@@ -16,7 +16,7 @@
                             <RadzenText class="rz-my-2">Logged in:</RadzenText>
                             <strong class="rz-my-2">@context?.User?.Identity?.Name</strong>
                             <a href="/Logout">
-                                <RadzenIcon class="rz-my-2 rz-mr-0" Icon="logout" style="font-weight: 600; color: dimgray;"/>
+                                <RadzenIcon class="rz-my-2 rz-mr-0 rz-color-warning" Icon="logout" style="font-weight: 600;"/>
                             </a>
                         </RadzenRow>
                    </AuthorizeView>
@@ -39,7 +39,7 @@
                 <RadzenPanelMenu>
                     <RadzenPanelMenuItem Text="Dansk Film Institut" Path="/" Style="font-size: 1.2rem; height: 43px;" class="align-content-md-center rz-border-radius-2 m-2" />
 
-                    <AuthorizeView Roles="Admin, User" Context="userContext">
+                    <AuthorizeView Roles="Administrator, Operatør, Programredaktør" Context="userContext">
                         <Authorized Context="userAuthorizedContext">
                             <RadzenPanelMenuItem Text="Cinematek" Icon="dashboard" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
                                 <RadzenPanelMenuItem Text="Event oversigt" Icon="view_list" Path="/EventOverview" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />
@@ -48,7 +48,7 @@
                         </Authorized>
                     </AuthorizeView>
 
-                    <AuthorizeView Roles="Admin" Context="adminContext">
+                    <AuthorizeView Roles="Administrator" Context="adminContext">
                         <Authorized Context="adminAuthorizedContext">
                             <RadzenPanelMenuItem Text="Admin" Icon="admin_panel_settings" Expanded="true" Style="font-size: 1rem" class="rz-border-radius-2 m-md-2">
                                 <RadzenPanelMenuItem Text="Brugeroversigt" Icon="id_card" Path="/UserOverview" Style="font-size: 0.8rem" class="rz-border-radius-2 m-2" />

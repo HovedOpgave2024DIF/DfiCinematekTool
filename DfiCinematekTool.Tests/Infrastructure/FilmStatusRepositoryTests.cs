@@ -59,7 +59,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal(newFilmStatus.FilmId, createdFilmStatus.FilmId);
 			Assert.Equal(newFilmStatus.Comment, createdFilmStatus.Comment);
 
-			// Verify
 			var dbFilmStatus = await _filmStatusRepository.GetFilmStatusByIdsAsync(eventId, filmId);
 			Assert.NotNull(dbFilmStatus);
 		}
@@ -163,7 +162,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal("Updated Comment", result.Comment);
 			Assert.False(result.HasKey);
 
-			// Verify
 			var dbFilmStatus = await _filmStatusRepository.GetFilmStatusByIdsAsync(eventId, filmId);
 			Assert.NotNull(dbFilmStatus);
 			Assert.Equal("Updated Comment", dbFilmStatus.Comment);
@@ -209,13 +207,13 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			// Act
 			var filmStatusIsDeleted = await _filmStatusRepository
 				.DeleteFilmStatusAsync(eventId, filmId);
-			
-			// Assert
-			Assert.True(filmStatusIsDeleted);
 
-			// Verify
-			var dbFilmStatus = await _filmStatusRepository
+            // Assert
+            Assert.True(filmStatusIsDeleted);
+
+            var dbFilmStatus = await _filmStatusRepository
 				.GetFilmStatusByIdsAsync(eventId, filmId);
+
 			Assert.Null(dbFilmStatus);
 		}
 
@@ -228,11 +226,10 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			var filmStatusIsNotDeleted = await _filmStatusRepository
 				.DeleteFilmStatusAsync(eventId, filmId);
 
-			// Assert
-			Assert.False(filmStatusIsNotDeleted);
+            // Assert
+            Assert.False(filmStatusIsNotDeleted);
 
-			// Verify
-			var filmStatsNotDeleted = await _filmStatusRepository
+            var filmStatsNotDeleted = await _filmStatusRepository
 				.GetFilmStatusByIdsAsync(eventId, filmId);
 			
 			Assert.Null(filmStatsNotDeleted);

@@ -1,5 +1,4 @@
-﻿using DfiCinematekTool.Domain.Entities;
-using DfiCinematekTool.Infrastructure.Context;
+﻿using DfiCinematekTool.Infrastructure.Context;
 using DfiCinematekTool.Infrastructure.Repositories;
 using DfiCinematekTool.Infrastructure.Seeds;
 using Microsoft.EntityFrameworkCore;

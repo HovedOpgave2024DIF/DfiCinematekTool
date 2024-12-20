@@ -1,5 +1,4 @@
 ﻿using DfiCinematekTool.Domain.Entities;
-using DfiCinematekTool.Domain.Interfaces;
 using DfiCinematekTool.Infrastructure.Context;
 using DfiCinematekTool.Infrastructure.Repositories;
 using DfiCinematekTool.Infrastructure.Seeds;
@@ -141,7 +140,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal("New Event", createdEvent.Title);
 			Assert.Equal(2, createdEvent?.Films?.Count);
 
-			// Verify the event was saved in the database
 			var savedEvent = await _eventRepository.GetEventByIdAsync(createdEvent.Id);
 			Assert.NotNull(savedEvent);
 			Assert.Equal("New Event", savedEvent.Title);
@@ -191,7 +189,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			// Assert
 			Assert.True(hasBeenDeleted);
 
-			// Verify the event has been deleted
 			var eventDeleted = await _eventRepository.GetEventByIdAsync(eventId);
 			Assert.Null(eventDeleted);
 		}
@@ -258,7 +255,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Equal(150, updatedResult.DurationInMinutes);
 			Assert.Equal(3, updatedResult.Films.Count);
 
-			// Verify the changes are reflected in the database
 			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
 			Assert.Equal("Updated Event Title", dbEvent.Title);
@@ -289,7 +285,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.NotNull(updatedResult);
 			Assert.Contains(updatedResult.Films, f => f.Id == 3);
 
-			// Verify the changes in the database
 			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
 			Assert.Contains(dbEvent.Films, f => f.Id == 3);
@@ -318,7 +313,6 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			Assert.Single(updatedResult.Films);
 			Assert.Contains(updatedResult.Films, f => f.Id == 2);
 
-			// Verify the changes in the database
 			var dbEvent = await _eventRepository.GetEventByIdAsync(1);
 			Assert.NotNull(dbEvent);
 			Assert.Single(dbEvent.Films);
@@ -343,7 +337,7 @@ namespace DfiCinematekTool.Tests.Infrastructure
 			// Arrange
 			var updatedEvent = new Event
 			{
-				Id = 99, // Non-existent event
+				Id = 99,
 				Title = "Non-existent Event"
 			};
 
