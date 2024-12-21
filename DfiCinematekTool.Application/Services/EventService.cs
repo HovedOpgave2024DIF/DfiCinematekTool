@@ -5,15 +5,15 @@ using Microsoft.Extensions.Logging;
 
 namespace DfiCinematekTool.Application.Services
 {
-    public class EventService : IEventService
-    {
-        private readonly IEventRepository _eventRepository;
-        private readonly ILogger<EventService> _logger; 
-        public EventService(IEventRepository eventRepository, ILogger<EventService> logger)
-        {
-            _eventRepository = eventRepository;
-            _logger = logger;
-        }
+	public class EventService : IEventService
+	{
+		private readonly IEventRepository _eventRepository;
+		private readonly ILogger<EventService> _logger;
+		public EventService(IEventRepository eventRepository, ILogger<EventService> logger)
+		{
+			_eventRepository = eventRepository;
+			_logger = logger;
+		}
 
 		public async Task<List<Event>> GetAllEventsAsync()
 		{
@@ -29,68 +29,68 @@ namespace DfiCinematekTool.Application.Services
 		}
 
 		public async Task<Event> CreateEventAsync(Event newEvent)
-        {
-            try
-            {
-                return await _eventRepository.CreateEventAsync(newEvent);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating event: {Title}", newEvent.Title);
-                throw;
-            }
-        }
+		{
+			try
+			{
+				return await _eventRepository.CreateEventAsync(newEvent);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error creating event: {Title}", newEvent.Title);
+				throw;
+			}
+		}
 
-        public async Task<List<Event>> GetPaginatedEventsAsync(int pageNumber, int pageSize)
-        {
-            try
-            {
-                return await _eventRepository.GetPaginatedEventsAsync(pageNumber,  pageSize);
-            }
-            catch (Exception ex)
-            {
+		public async Task<List<Event>> GetPaginatedEventsAsync(int pageNumber, int pageSize)
+		{
+			try
+			{
+				return await _eventRepository.GetPaginatedEventsAsync(pageNumber, pageSize);
+			}
+			catch (Exception ex)
+			{
 				_logger.LogError(ex, "Error fetcing paginated events");
 				throw;
-            }
-        }
+			}
+		}
 
-        public async Task<Event?> GetEventById(int id)
-        {
-            try
-            {
-                return await _eventRepository.GetEventByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
+		public async Task<Event?> GetEventById(int id)
+		{
+			try
+			{
+				return await _eventRepository.GetEventByIdAsync(id);
+			}
+			catch (Exception ex)
+			{
 				_logger.LogError(ex, "Error fetching event with id: {id}", id);
 				throw;
-            }
-        }
+			}
+		}
 
-        public async Task<Event?> UpdateEvent(Event updatedEvent)
-        {
-            try
-            {
-                return await _eventRepository.UpdateEventAsync(updatedEvent);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating event: {Title}", updatedEvent.Title);
-                throw;
-            }
-        }
+		public async Task<Event?> UpdateEvent(Event updatedEvent)
+		{
+			try
+			{
+				return await _eventRepository.UpdateEventAsync(updatedEvent);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error updating event: {Title}", updatedEvent.Title);
+				throw;
+			}
+		}
 
-        public async Task<bool> DeleteEventById(int id)
-        {
-            try
-            {
-                return await _eventRepository.DeleteEventByIdAsync(id);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error deleting event with id: {id}", id);
-                throw;
-            }
-        }
-    }
+		public async Task<bool> DeleteEventById(int id)
+		{
+			try
+			{
+				return await _eventRepository.DeleteEventByIdAsync(id);
+			}
+			catch (Exception ex)
+			{
+				_logger.LogError(ex, "Error deleting event with id: {id}", id);
+				throw;
+			}
+		}
+	}
 }

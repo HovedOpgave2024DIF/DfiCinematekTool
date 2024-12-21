@@ -85,9 +85,9 @@ namespace DfiCinematekTool.Application.Services
 		{
 			try
 			{
-				return await _userRepository.HandleUserLockoutAsync(userName, isLocked);
+				return await _userRepository.LockoutUserAsync(userName, isLocked);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Error handling user lockout for: {Username}", userName);
 				throw;

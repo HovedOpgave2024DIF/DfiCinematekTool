@@ -9,6 +9,6 @@ namespace DfiCinematekTool.Domain.Interfaces
 		Task<User?> CreateUserAsync(User user);
 		Task<User?> UpdateUserAsync(User user);
 		Task<bool> DeleteUserByUserNameAsync(string userName);
-		Task<bool> HandleUserLockoutAsync(string userName, bool isLocked);
+		Task<bool> LockoutUserAsync(string userName, bool isLocked);
 	}
 }

@@ -62,12 +62,12 @@
 								<HeaderTemplate>
 									<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select all" }})" Disabled="true" TriState="false" TValue="bool"
 									Value="@(FilmList.Any(f => filmIds != null && filmIds.Contains(f.Id)))"
-									Change="@(args => filmIds = args ? grid.View.Cast<Film>().Select(f => f.Id) : filmIds = Enumerable.Empty<int>())" />
+									Change="@(args => filmIds = args ? grid!.View.Cast<Film>().Select(f => f.Id) : filmIds = Enumerable.Empty<int>())" />
 								</HeaderTemplate>
 								<Template Context="data">
 									<RadzenCheckBox InputAttributes="@(new Dictionary<string,object>(){ { "aria-label", "select item" }})" TriState="false"
 									Value="@(filmIds != null && filmIds.Contains(((Film) data).Id))"
-									TValue="bool" Change=@(args => grid.SelectItem(data)) @onclick:stopPropagation />
+									TValue="bool" Change=@(args => grid!.SelectItem(data)) @onclick:stopPropagation />
 								</Template>
 							</RadzenDropDownDataGridColumn>
 							<RadzenDropDownDataGridColumn Property="@nameof(Film.Title)" Title="FilmTitle" Width="100px" />
@@ -102,8 +102,6 @@
 }
 
 @code {
-
-
 	[SupplyParameterFromForm]
 	public Event Event { get; set; } = new Event();
 
@@ -119,18 +117,17 @@
 	[Parameter]
 	public ICollection<Film> FilmList { get; set; } = new List<Film>();
 
-	private string Title => IsEditMode ? $"Edit Event {EventId}" : "Create New Event";
+	private string Title => IsEditMode ? $"Opdater event" : "Opret nyt event";
 
-	//Enums for dropdown menus
 	private List<Screen> ScreenOptions = Enum.GetValues(typeof(ScreenEnum)).Cast<ScreenEnum>().Select(screen => screen.ConvertScreenEnumToScreen()).ToList();
+
 	private List<EventType> EventTypeEnums = Enum.GetValues(typeof(EventTypeEnum)).Cast<EventTypeEnum>().Select(eventType => eventType.ConvertEventTypeEnumToEventType()).ToList();
 
-	//For adding film data
 	private RadzenDropDownDataGrid<IEnumerable<int>>? grid;
-
 
 	private IEnumerable<int> filmIds { get; set; } = new List<int>();
 
+	
 	public void AddFilmsToEvent()
 	{
 		Event.Films?.Clear();

@@ -7,10 +7,7 @@ namespace DfiCinematekTool.Infrastructure.Context
 {
 	public class CinematekDbContext : IdentityDbContext<ApplicationUser>
 	{
-		public CinematekDbContext(DbContextOptions<CinematekDbContext> options) : base(options) 
-		{ 
-
-		}
+		public CinematekDbContext(DbContextOptions<CinematekDbContext> options) : base(options) { }
 
 		public DbSet<Film> Films { get; set; } = default!;
 		public DbSet<Event> Events { get; set; } = default!;

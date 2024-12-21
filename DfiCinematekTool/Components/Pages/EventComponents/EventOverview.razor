@@ -3,10 +3,10 @@
 @inject IFilmStatusService FilmStatusService
 @inject ToasterService Toaster
 @inject NavigationManager Navigation
-@attribute [Authorize(Roles = "Admin, User")]
+@attribute [Authorize(Roles = "Administrator, Operatør, Programredaktør")]
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
-<PageTitle>Event Overview</PageTitle>
+<PageTitle>Event oversigt</PageTitle>
 
 @if (!Events.Any()) 
 {

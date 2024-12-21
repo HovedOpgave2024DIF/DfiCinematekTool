@@ -40,7 +40,6 @@
 	</RadzenStack>
 </EditForm>
 
-
 @code {
 	[SupplyParameterFromForm]
 	public User User { get; set; } = new();
@@ -65,14 +64,7 @@
 	{
 		if (IsEditMode)
 		{
-			Console.WriteLine(Username);
 			User = await UserService.GetUserByUserNameAsync(Username) ?? new();
-
-			Console.WriteLine(User?.UserName);
-		}
-		else
-		{
-			// Insert Toaster
 		}
 	}
 
